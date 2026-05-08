@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LeaseGuard — Know What You're Signing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  /* Blues & whites */
+  --white:#ffffff;
+  --bg:#f4f8fc;
+  --bg2:#eaf2fa;
+  --bg3:#ddeaf6;
+  --blue-pale:#e8f2fb;
+  --blue-light:#c8dff5;
+  --blue-mid:#5b9bd5;
+  --blue:#2d7cc8;
+  --blue-dark:#1a5490;
+  --navy:#0f2d4a;
+
+  /* Text */
+  --ink:#0f2d4a;
+  --ink2:#2a4a6a;
+  --ink3:#5a7a9a;
+  --ink4:#8aaac8;
+
+  /* Accents */
+  --teal:#2ba8a0;
+  --teal-light:#e0f5f4;
+  --warn:#d08030;
+  --danger:#c03040;
+  --safe:#2a9060;
+
+  /* Semantic */
+  --accent:var(--blue);
+  --accent-light:var(--blue-pale);
+  --border:rgba(45,124,200,0.15);
+  --border2:rgba(45,124,200,0.25);
+
+  --font-display:'Fraunces',serif;
+  --font-body:'DM Sans',sans-serif;
+  --radius:14px;
+  --shadow:0 2px 16px rgba(15,45,74,0.08);
+  --shadow-lg:0 10px 48px rgba(15,45,74,0.13);
+}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.6;overflow-x:hidden}
+
+/* ── PAGE ROUTING ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ── GEOMETRIC BG PATTERN (SVG inline via CSS) ── */
+.geo-bg{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+}
+.geo-bg svg{position:absolute;opacity:0.18}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:16px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(244,248,252,0.94);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  transition:background 0.3s;
+}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.nav-logo-icon{
+  width:34px;height:34px;background:var(--blue);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;
+  letter-spacing:-0.3px;
+}
+.nav-logo-text{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-login-btn{
+  padding:9px 20px;background:transparent;color:var(--blue);
+  border:1.5px solid var(--border2);border-radius:999px;
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;
+}
+.nav-login-btn:hover{background:var(--blue-pale);border-color:var(--blue)}
+.nav-user-pill{
+  display:none;align-items:center;gap:8px;
+  padding:7px 14px 7px 8px;
+  background:var(--blue-pale);border:1px solid var(--border2);
+  border-radius:999px;cursor:pointer;transition:all 0.2s;
+}
+.nav-user-pill:hover{background:var(--bg3)}
+.nav-user-pill.show{display:flex}
+.nav-user-avatar{
+  width:26px;height:26px;background:var(--blue);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:11px;font-weight:700;font-family:var(--font-display);
+}
+.nav-user-name{font-size:13px;color:var(--ink2);font-weight:500}
+.nav-cta{
+  padding:10px 24px;background:var(--blue);color:#fff;border:none;
+  border-radius:999px;font-family:var(--font-body);font-size:14px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;
+}
+.nav-cta:hover{background:var(--blue-dark);transform:translateY(-1px);box-shadow:0 4px 16px rgba(45,124,200,0.35)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  background:var(--white);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:120px 24px 80px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:7px 18px;background:var(--blue-pale);border:1px solid var(--border2);
+  border-radius:999px;font-size:13px;color:var(--blue);margin-bottom:32px;
+  animation:fadeUp 0.6s ease both;font-weight:500;
+}
+.hero-badge-dot{width:7px;height:7px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+.hero h1{
+  font-family:var(--font-display);
+  font-size:clamp(42px,6.5vw,84px);
+  font-weight:700;line-height:1.0;letter-spacing:-2px;
+  color:var(--ink);max-width:860px;margin-bottom:24px;
+  animation:fadeUp 0.7s 0.1s ease both;
+}
+.hero h1 em{font-style:italic;color:var(--blue)}
+.hero-sub{
+  font-size:clamp(16px,2vw,19px);color:var(--ink3);
+  max-width:540px;line-height:1.65;margin-bottom:48px;
+  font-weight:300;animation:fadeUp 0.7s 0.2s ease both;
+}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeUp 0.7s 0.3s ease both}
+
+.btn-primary{
+  padding:15px 34px;background:var(--blue);color:#fff;border:none;
+  border-radius:999px;font-family:var(--font-body);font-size:15px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;
+}
+.btn-primary:hover{background:var(--blue-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,124,200,0.3)}
+.btn-secondary{
+  padding:15px 34px;background:transparent;color:var(--blue);
+  border:1.5px solid var(--border2);border-radius:999px;
+  font-family:var(--font-body);font-size:15px;cursor:pointer;transition:all 0.2s;
+}
+.btn-secondary:hover{border-color:var(--blue);background:var(--blue-pale);transform:translateY(-2px)}
+
+.hero-visual{
+  margin-top:60px;width:100%;max-width:640px;
+  background:var(--white);border:1px solid var(--bg3);
+  border-radius:20px;padding:24px;box-shadow:var(--shadow-lg);
+  animation:fadeUp 0.8s 0.4s ease both;position:relative;text-align:left;
+}
+.hero-visual-label{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  padding:4px 14px;background:var(--blue);color:#fff;
+  border-radius:999px;font-size:12px;white-space:nowrap;font-weight:500;
+}
+.mock-clause{
+  display:flex;align-items:flex-start;gap:12px;padding:12px;
+  background:var(--bg);border-radius:10px;margin-bottom:10px;
+  border:1px solid var(--bg3);
+}
+.mock-clause:last-child{margin-bottom:0}
+.mock-pill{flex-shrink:0;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:500;margin-top:1px}
+.mock-pill.h{background:rgba(192,48,64,0.1);color:var(--danger)}
+.mock-pill.m{background:rgba(208,128,48,0.1);color:var(--warn)}
+.mock-pill.l{background:rgba(42,144,96,0.1);color:var(--safe)}
+.mock-text{font-size:13px;color:var(--ink2);line-height:1.5}
+.mock-text strong{color:var(--ink);font-weight:500;font-size:12px;display:block;margin-bottom:2px}
+
+/* ── STATS ── */
+.stats-band{
+  background:var(--blue);
+  padding:56px 24px;display:flex;
+  position:relative;overflow:hidden;
+}
+.stats-band-geo{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0.1}
+.stat-item{flex:1;text-align:center;padding:16px;border-right:1px solid rgba(255,255,255,0.2);position:relative;z-index:1}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:var(--font-display);font-size:46px;font-weight:700;color:#fff;line-height:1}
+.stat-label{font-size:13px;color:rgba(255,255,255,0.65);margin-top:6px}
+
+/* ── SECTIONS ── */
+section{padding:96px 24px;position:relative}
+.section-label{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:12px}
+.section-title{font-family:var(--font-display);font-size:clamp(30px,3.8vw,50px);font-weight:700;letter-spacing:-1px;color:var(--ink);margin-bottom:16px;line-height:1.1}
+.section-sub{font-size:16px;color:var(--ink3);max-width:480px;font-weight:300;line-height:1.65}
+
+/* ── HOW IT WORKS — ROADMAP ── */
+.how-section{background:var(--bg2);overflow:hidden}
+.roadmap{
+  position:relative;max-width:720px;margin:56px auto 0;
+  padding:0 0 0 48px;
+}
+.roadmap::before{
+  content:'';position:absolute;left:16px;top:12px;bottom:12px;
+  width:2px;background:linear-gradient(to bottom,var(--blue-light),var(--blue),var(--blue-light));
+}
+.roadmap-step{
+  position:relative;margin-bottom:48px;
+}
+.roadmap-step:last-child{margin-bottom:0}
+.roadmap-dot{
+  position:absolute;left:-40px;top:4px;
+  width:24px;height:24px;border-radius:50%;
+  background:var(--white);border:2.5px solid var(--blue);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--blue);font-family:var(--font-display);
+  z-index:1;
+}
+.roadmap-step-num{
+  font-family:var(--font-display);font-size:11px;font-weight:700;
+  color:var(--blue);letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:4px;
+}
+.roadmap-step-title{font-family:var(--font-display);font-size:20px;font-weight:500;color:var(--ink);margin-bottom:6px}
+.roadmap-step-desc{font-size:14px;color:var(--ink3);line-height:1.65;max-width:520px}
+.roadmap-step-tag{
+  display:inline-block;margin-top:10px;padding:4px 12px;
+  background:var(--blue-pale);border:1px solid var(--border);
+  border-radius:999px;font-size:12px;color:var(--blue);font-weight:500;
+}
+
+/* ── FEATURES ── */
+.features-intro{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:64px}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:18px}
+.feature-card{
+  background:var(--white);border:1.5px solid var(--bg3);
+  border-radius:18px;padding:30px 26px;
+  cursor:pointer;transition:all 0.3s cubic-bezier(.25,.8,.25,1);
+  position:relative;overflow:hidden;
+}
+.feature-card:hover{
+  transform:scale(1.04) translateY(-5px);
+  border-color:var(--blue-mid);
+  box-shadow:0 20px 56px rgba(45,124,200,0.18), 0 0 0 1px rgba(45,124,200,0.15);
+  background:var(--white);
+}
+.feature-card>*{position:relative;z-index:1}
+.feat-tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:500;margin-bottom:12px;transition:all 0.3s}
+.feat-tag.risk{background:rgba(192,48,64,0.08);color:var(--danger)}
+.feat-tag.score{background:rgba(208,128,48,0.08);color:var(--warn)}
+.feat-tag.explain{background:rgba(42,144,96,0.08);color:var(--safe)}
+.feat-tag.qa{background:var(--blue-pale);color:var(--blue)}
+.feat-title{font-family:var(--font-display);font-size:19px;font-weight:500;color:var(--ink);margin-bottom:8px;line-height:1.2;transition:color 0.3s}
+.feat-desc{font-size:14px;color:var(--ink3);line-height:1.6;transition:color 0.3s;margin-bottom:14px}
+.feat-arrow{font-size:16px;color:var(--blue-light);transition:all 0.3s;display:block}
+.feature-card:hover .feat-arrow{color:var(--blue);transform:translate(3px,-3px)}
+
+/* ── TARGET USERS — ROADMAP ALT ── */
+.target-section{background:var(--bg);overflow:hidden}
+.users-roadmap{
+  position:relative;max-width:860px;margin:56px auto 0;
+}
+/* alternating left/right layout */
+.user-row{
+  display:grid;grid-template-columns:1fr 80px 1fr;
+  align-items:start;margin-bottom:0;
+}
+.user-row .user-content{padding:0 0 48px 0}
+.user-row .user-content.right{text-align:right}
+.user-row .user-spine{
+  display:flex;flex-direction:column;align-items:center;
+  padding-top:4px;
+}
+.user-spine-line{flex:1;width:2px;background:var(--blue-light);min-height:80px}
+.user-spine-dot{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--white);border:2.5px solid var(--blue-mid);
+  flex-shrink:0;margin:4px 0;
+}
+.user-row:last-child .user-spine-line.bottom{display:none}
+.user-row .user-placeholder{} /* empty cell for alternating */
+
+.user-rule{height:1.5px;background:var(--bg3);margin-bottom:10px}
+.user-rule.accent{background:var(--blue-light);height:2px}
+.user-name{font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--ink);margin-bottom:8px}
+.user-desc-text{font-size:14px;color:var(--ink3);line-height:1.65;margin-bottom:10px}
+.user-quote{font-size:13px;color:var(--blue);font-style:italic}
+
+/* ── TESTIMONIAL ── */
+.testimonial-section{background:var(--navy);padding:96px 24px;text-align:center;position:relative;overflow:hidden}
+.testimonial-section .section-label{color:rgba(200,223,245,0.4)}
+.quote{font-family:var(--font-display);font-size:clamp(22px,3.2vw,40px);font-weight:300;font-style:italic;color:#fff;max-width:740px;margin:0 auto 28px;line-height:1.35;letter-spacing:-0.5px}
+.quote-attr{font-size:13px;color:rgba(200,223,245,0.4);letter-spacing:1px;text-transform:uppercase}
+
+/* ── CTA ── */
+.cta-section{background:var(--blue-pale);text-align:center;padding:96px 24px;border-top:1px solid var(--border)}
+.cta-section .section-sub{margin:0 auto 40px}
+.disclaimer{font-size:12px;color:var(--ink4);margin-top:16px}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-logo{font-family:var(--font-display);font-size:20px;font-weight:700;color:#fff}
+.footer-links{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.footer-note{font-size:13px;color:rgba(200,223,245,0.3)}
+.footer-link{font-size:13px;color:rgba(200,223,245,0.5);cursor:pointer;transition:color 0.2s;text-decoration:none;border:none;background:none;font-family:var(--font-body)}
+.footer-link:hover{color:rgba(200,223,245,0.9)}
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(15,45,74,0.55);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.25s ease;
+}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{
+  background:var(--white);border-radius:24px;
+  box-shadow:0 24px 80px rgba(15,45,74,0.25);
+  width:100%;max-width:420px;
+  transform:translateY(16px) scale(0.98);
+  transition:transform 0.25s ease;
+  overflow:hidden;
+}
+.modal-overlay.show .modal{transform:translateY(0) scale(1)}
+
+/* Login modal */
+.modal-header{padding:32px 32px 0;position:relative}
+.modal-close{
+  position:absolute;top:20px;right:20px;
+  width:32px;height:32px;border-radius:50%;
+  background:var(--bg);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:var(--ink3);transition:all 0.2s;
+}
+.modal-close:hover{background:var(--bg3);color:var(--ink)}
+.modal-logo{display:flex;align-items:center;gap:8px;margin-bottom:24px}
+.modal-logo-icon{width:28px;height:28px;background:var(--blue);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;font-family:var(--font-display)}
+.modal-logo-text{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--ink)}
+.modal-title{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:-0.5px;color:var(--ink);margin-bottom:6px}
+.modal-sub{font-size:14px;color:var(--ink3);margin-bottom:28px;font-weight:300}
+.modal-body{padding:0 32px 32px}
+.modal-tab-row{display:flex;gap:0;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:24px}
+.modal-tab{flex:1;padding:8px;border:none;background:transparent;border-radius:8px;font-family:var(--font-body);font-size:14px;color:var(--ink3);cursor:pointer;transition:all 0.2s;font-weight:400}
+.modal-tab.active{background:var(--white);color:var(--ink);font-weight:500;box-shadow:0 1px 6px rgba(15,45,74,0.1)}
+.modal-form{display:flex;flex-direction:column;gap:14px}
+.modal-form.hidden{display:none}
+.form-field{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:12px;color:var(--ink3);font-weight:500;letter-spacing:0.3px}
+.form-input{
+  padding:11px 14px;background:var(--bg);border:1.5px solid var(--bg3);
+  border-radius:10px;color:var(--ink);font-family:var(--font-body);
+  font-size:14px;outline:none;transition:border-color 0.2s;
+}
+.form-input:focus{border-color:var(--blue);background:var(--white)}
+.form-submit{
+  padding:13px;background:var(--blue);color:#fff;border:none;
+  border-radius:10px;font-family:var(--font-display);font-size:15px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;margin-top:4px;
+}
+.form-submit:hover{background:var(--blue-dark);transform:translateY(-1px)}
+.form-divider{display:flex;align-items:center;gap:10px;color:var(--ink4);font-size:12px;margin:4px 0}
+.form-divider::before,.form-divider::after{content:'';flex:1;height:1px;background:var(--bg3)}
+.form-google{
+  padding:11px;background:var(--white);color:var(--ink2);
+  border:1.5px solid var(--bg3);border-radius:10px;
+  font-family:var(--font-body);font-size:14px;cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.form-google:hover{border-color:var(--blue-light);background:var(--bg)}
+.form-terms{font-size:11px;color:var(--ink4);text-align:center;line-height:1.5;margin-top:4px}
+.form-terms a{color:var(--blue);cursor:pointer;text-decoration:none}
+.modal-success{text-align:center;padding:16px 0}
+.modal-success-icon{width:56px;height:56px;background:var(--blue-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px}
+.modal-success-title{font-family:var(--font-display);font-size:20px;font-weight:500;color:var(--ink);margin-bottom:6px}
+.modal-success-sub{font-size:14px;color:var(--ink3)}
+
+/* User dropdown menu */
+.user-dropdown{
+  position:absolute;top:calc(100% + 10px);right:48px;
+  background:var(--white);border:1px solid var(--bg3);
+  border-radius:16px;padding:8px;min-width:260px;
+  box-shadow:var(--shadow-lg);
+  opacity:0;pointer-events:none;transform:translateY(-8px);
+  transition:all 0.2s;z-index:300;
+}
+.user-dropdown.show{opacity:1;pointer-events:all;transform:translateY(0)}
+.user-dropdown-header{padding:12px 12px 8px}
+.user-dropdown-email{font-size:13px;color:var(--ink3);margin-bottom:2px}
+.user-dropdown-name{font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--ink)}
+.dropdown-divider{height:1px;background:var(--bg3);margin:6px 0}
+.dropdown-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:10px;cursor:pointer;
+  font-size:14px;color:var(--ink2);transition:background 0.15s;
+}
+.dropdown-item:hover{background:var(--bg)}
+.dropdown-item.danger{color:var(--danger)}
+.dropdown-item.danger:hover{background:rgba(192,48,64,0.06)}
+.dropdown-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+
+/* Previous contracts panel */
+.contracts-panel{display:none}
+.contracts-panel.show{display:block}
+.modal-panel-title{font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--ink);margin-bottom:16px}
+.contract-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px;background:var(--bg);border-radius:10px;
+  margin-bottom:8px;cursor:pointer;transition:all 0.2s;
+  border:1px solid transparent;
+}
+.contract-item:hover{background:var(--blue-pale);border-color:var(--border)}
+.contract-icon{width:36px;height:36px;background:var(--blue-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.contract-info{flex:1;min-width:0}
+.contract-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contract-meta{font-size:12px;color:var(--ink4)}
+.contract-score{flex-shrink:0;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600}
+.contract-score.high{background:rgba(192,48,64,0.1);color:var(--danger)}
+.contract-score.med{background:rgba(208,128,48,0.1);color:var(--warn)}
+.contract-score.low{background:rgba(42,144,96,0.1);color:var(--safe)}
+.contracts-empty{text-align:center;padding:32px 0;color:var(--ink4);font-size:14px}
+
+/* ── PRIVACY PAGE ── */
+.privacy-page{background:var(--white);min-height:100vh;padding-top:80px}
+.privacy-wrap{max-width:760px;margin:0 auto;padding:48px 24px 80px}
+.privacy-hero{padding:48px 0 40px;border-bottom:1px solid var(--bg3);margin-bottom:40px}
+.privacy-hero h1{font-family:var(--font-display);font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-1px;color:var(--ink);margin-bottom:10px}
+.privacy-hero p{font-size:15px;color:var(--ink3);font-weight:300}
+.privacy-toc{background:var(--bg);border-radius:14px;padding:20px 24px;margin-bottom:40px;border:1px solid var(--bg3)}
+.privacy-toc-title{font-size:12px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+.privacy-toc ol{padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.privacy-toc li{font-size:13px;color:var(--blue);cursor:pointer;transition:color 0.2s}
+.privacy-toc li:hover{color:var(--blue-dark)}
+.privacy-section{margin-bottom:40px}
+.privacy-section-num{font-size:11px;color:var(--blue);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.privacy-section h2{font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--ink);margin-bottom:14px;letter-spacing:-0.3px}
+.privacy-section p{font-size:15px;color:var(--ink2);line-height:1.75;margin-bottom:12px;font-weight:300}
+.privacy-section ul{padding-left:20px;margin-bottom:12px;display:flex;flex-direction:column;gap:6px}
+.privacy-section li{font-size:15px;color:var(--ink2);line-height:1.65;font-weight:300}
+.privacy-section h3{font-size:16px;font-weight:500;color:var(--ink);margin:16px 0 8px}
+.privacy-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.privacy-table th{background:var(--bg2);padding:10px 14px;text-align:left;font-weight:500;color:var(--ink);border:1px solid var(--bg3)}
+.privacy-table td{padding:10px 14px;border:1px solid var(--bg3);color:var(--ink2);vertical-align:top}
+.privacy-updated{font-size:13px;color:var(--ink4);padding-top:32px;border-top:1px solid var(--bg3);margin-top:48px}
+.privacy-contact{background:var(--blue-pale);border:1px solid var(--border);border-radius:14px;padding:24px;margin-top:32px}
+.privacy-contact h3{font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--ink);margin-bottom:8px}
+.privacy-contact p{font-size:14px;color:var(--ink3);line-height:1.65}
+.privacy-contact a{color:var(--blue)}
+
+/* ══════════════════════════════
+   INNER PAGES
+══════════════════════════════ */
+.inner-page{min-height:100vh;background:var(--bg);padding-top:80px}
+.inner-wrap{max-width:780px;margin:0 auto;padding:48px 24px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--ink3);font-size:14px;cursor:pointer;background:none;border:none;margin-bottom:28px;transition:color 0.2s}
+.back-btn:hover{color:var(--blue)}
+.page-header{margin-bottom:36px}
+.page-header h2{font-family:var(--font-display);font-size:34px;font-weight:700;letter-spacing:-0.8px;margin-bottom:6px;color:var(--ink)}
+.page-header p{color:var(--ink3);font-size:15px;font-weight:300}
+
+/* ── LOADING OVERLAY ── */
+.loading-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(244,248,252,0.88);
+  backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.25s;
+}
+.loading-overlay.show{opacity:1;pointer-events:all}
+.loading-spinner{
+  width:44px;height:44px;
+  border:3px solid var(--bg3);
+  border-top-color:var(--blue);
+  border-radius:50%;
+  animation:spin 0.75s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-family:var(--font-display);font-size:20px;font-weight:500;color:var(--ink)}
+.loading-step{font-size:13px;color:var(--ink3);min-height:20px;transition:opacity 0.3s}
+
+/* ── TOAST NOTIFICATION ── */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--navy);color:#fff;padding:12px 24px;
+  border-radius:999px;font-size:14px;z-index:600;
+  transition:transform 0.3s ease;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.error{background:var(--danger)}
+
+/* ── DYNAMIC RESULTS ── */
+.results-placeholder{
+  text-align:center;padding:80px 20px;color:var(--ink3);
+}
+.results-placeholder h3{font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--ink2);margin-bottom:8px}
+
+/* ── SUGGESTIONS LIST ── */
+.suggestions-panel{background:var(--white);border:1.5px solid var(--bg3);border-radius:16px;padding:24px;margin-bottom:18px}
+.suggestions-list{display:flex;flex-direction:column;gap:10px;margin-top:0}
+.suggestion-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bg3)}
+.suggestion-item:last-child{border-bottom:none;padding-bottom:0}
+.suggestion-num{width:22px;height:22px;background:var(--blue-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blue);flex-shrink:0;margin-top:1px}
+.suggestion-text{font-size:14px;color:var(--ink2);line-height:1.6}
+
+.questions-panel{background:var(--blue-pale);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:18px}
+.question-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(45,124,200,0.12)}
+.question-item:last-child{border-bottom:none;padding-bottom:0}
+.question-icon{font-size:14px;color:var(--blue);margin-top:2px;flex-shrink:0}
+.question-text{font-size:14px;color:var(--ink2);line-height:1.6}
+
+.upload-area{border:2px dashed var(--blue-light);border-radius:var(--radius);padding:44px 32px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:20px;background:var(--white)}
+.upload-area:hover,.upload-area.drag{border-color:var(--blue);background:var(--blue-pale)}
+.upload-area.has-file{border-style:solid;border-color:var(--blue);background:var(--blue-pale)}
+.upload-title{font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--ink);margin-bottom:6px}
+.upload-sub{color:var(--ink3);font-size:14px}
+.upload-sub span{color:var(--blue);cursor:pointer;text-decoration:underline}
+#fileInput{display:none}
+
+.divider{display:flex;align-items:center;gap:12px;color:var(--ink4);font-size:13px;margin:20px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bg3)}
+
+textarea.paste-area{width:100%;min-height:140px;background:var(--white);border:1.5px solid var(--bg3);border-radius:12px;color:var(--ink);font-family:var(--font-body);font-size:14px;padding:16px;resize:vertical;outline:none;transition:border-color 0.2s;line-height:1.6}
+textarea.paste-area:focus{border-color:var(--blue)}
+textarea.paste-area::placeholder{color:var(--ink4)}
+
+.sample-btn{display:inline-block;margin-top:10px;padding:8px 16px;background:transparent;border:1.5px solid var(--bg3);border-radius:8px;color:var(--ink3);font-size:13px;cursor:pointer;transition:all 0.2s}
+.sample-btn:hover{border-color:var(--blue);color:var(--blue)}
+
+.action-btns{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.action-btn{padding:16px;border:none;border-radius:12px;font-family:var(--font-display);font-size:16px;font-weight:500;cursor:pointer;transition:all 0.25s;letter-spacing:-0.2px}
+.action-btn.primary{background:var(--blue);color:#fff}
+.action-btn.primary:hover{background:var(--blue-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,124,200,0.28)}
+.action-btn.secondary{background:var(--white);color:var(--blue);border:1.5px solid var(--border2)}
+.action-btn.secondary:hover{background:var(--blue-pale);border-color:var(--blue);transform:translateY(-2px)}
+.action-btn small{display:block;font-family:var(--font-body);font-size:12px;opacity:0.7;margin-top:3px;font-weight:400}
+
+.error-msg{background:rgba(192,48,64,0.07);border:1px solid rgba(192,48,64,0.2);border-radius:10px;padding:12px 16px;color:var(--danger);font-size:14px;margin-top:12px;display:none}
+.error-msg.show{display:block}
+
+/* ══════════════════════════════
+   RESULTS PAGE
+══════════════════════════════ */
+
+/* Score hero — LIGHT */
+.score-hero{
+  background:linear-gradient(135deg,var(--blue-pale) 0%,var(--bg2) 100%);
+  border:1.5px solid var(--border2);
+  padding:36px 40px;border-radius:20px;margin-bottom:28px;
+  display:flex;align-items:center;gap:32px;
+}
+.score-circle{
+  width:110px;height:110px;flex-shrink:0;border-radius:50%;
+  background:var(--white);
+  border:3px solid var(--blue-light);
+  box-shadow:0 4px 20px rgba(45,124,200,0.15);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.score-circle .num{font-family:var(--font-display);font-size:40px;font-weight:700;line-height:1;color:var(--danger)}
+.score-circle .num.medium{color:var(--warn)}
+.score-circle .num.low{color:var(--safe)}
+.score-circle .denom{font-size:12px;color:var(--ink4);margin-top:2px}
+.score-right h3{font-family:var(--font-display);font-size:24px;font-weight:700;margin-bottom:6px;letter-spacing:-0.4px;color:var(--ink)}
+.score-right p{font-size:14px;color:var(--ink3);line-height:1.6;max-width:440px;font-weight:300}
+.score-meta{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.score-chip{padding:4px 12px;background:var(--white);border:1px solid var(--border2);border-radius:999px;font-size:12px;color:var(--ink2)}
+.score-chip.danger{background:rgba(192,48,64,0.07);border-color:rgba(192,48,64,0.2);color:var(--danger)}
+.score-chip.warn{background:rgba(208,128,48,0.07);border-color:rgba(208,128,48,0.2);color:var(--warn)}
+.score-chip.safe{background:rgba(42,144,96,0.07);border-color:rgba(42,144,96,0.2);color:var(--safe)}
+
+.score-bar-track{background:var(--bg3);border-radius:999px;height:7px;overflow:hidden;margin:10px 0 4px}
+.score-bar-fill{height:100%;border-radius:999px;transition:width 1.2s cubic-bezier(.25,.8,.25,1);background:var(--danger)}
+.score-bar-fill.medium{background:var(--warn)}
+.score-bar-fill.low{background:var(--safe)}
+
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:26px}
+.result-panel{background:var(--white);border:1.5px solid var(--bg3);border-radius:16px;padding:24px}
+.panel-label{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px;font-weight:500}
+
+.risk-bars{display:flex;flex-direction:column;gap:11px}
+.risk-bar-item{display:flex;align-items:center;gap:10px}
+.risk-bar-label{font-size:13px;color:var(--ink2);width:130px;flex-shrink:0}
+.risk-bar-track-sm{flex:1;height:5px;background:var(--bg3);border-radius:999px;overflow:hidden}
+.risk-bar-fill-sm{height:100%;border-radius:999px}
+.risk-bar-fill-sm.h{background:var(--danger)}
+.risk-bar-fill-sm.m{background:var(--warn)}
+.risk-bar-fill-sm.l{background:var(--safe)}
+.risk-bar-count{font-size:12px;color:var(--ink4);width:18px;text-align:right}
+
+.neg-items{display:flex;flex-direction:column;gap:10px}
+.neg-item{background:var(--bg);border-radius:10px;padding:12px 14px;border-left:3px solid var(--blue-mid)}
+.neg-clause{font-size:11px;color:var(--blue);font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px}
+.neg-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+.clause-section-label{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px;font-weight:500}
+.clause-full-list{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.clause-card{background:var(--white);border:1.5px solid var(--bg3);border-radius:14px;overflow:hidden}
+.clause-card.risk-high{border-left:4px solid var(--danger)}
+.clause-card.risk-medium{border-left:4px solid var(--warn)}
+.clause-card.risk-low{border-left:4px solid var(--safe)}
+.clause-header{padding:15px 20px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;user-select:none}
+.clause-badge{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:500;flex-shrink:0;margin-top:2px}
+.clause-badge.high{background:rgba(192,48,64,0.1);color:var(--danger)}
+.clause-badge.medium{background:rgba(208,128,48,0.1);color:var(--warn)}
+.clause-badge.low{background:rgba(42,144,96,0.1);color:var(--safe)}
+.clause-title-block{flex:1}
+.clause-title{font-family:var(--font-display);font-size:15px;font-weight:500;margin-bottom:2px;color:var(--ink)}
+.clause-category{font-size:12px;color:var(--ink4)}
+.clause-chevron{color:var(--ink4);font-size:15px;flex-shrink:0;transition:transform 0.2s;margin-top:3px}
+.clause-card.open .clause-chevron{transform:rotate(180deg)}
+.clause-body{display:none;padding:0 20px 20px}
+.clause-card.open .clause-body{display:block}
+.clause-original{background:var(--bg);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--ink3);font-family:monospace;line-height:1.7;margin-bottom:14px;border-left:3px solid var(--bg3)}
+.expl-block{margin-bottom:12px}
+.expl-label{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.expl-text{font-size:14px;color:var(--ink2);line-height:1.65}
+.suggestion-block{background:var(--blue-pale);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.suggestion-label{font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.suggestion-text{font-size:14px;color:var(--blue-dark);line-height:1.65}
+
+.bottom-cta{background:var(--bg2);border:1.5px solid var(--border);border-radius:16px;padding:26px 30px;margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.bottom-cta-text h4{font-family:var(--font-display);font-size:19px;font-weight:500;margin-bottom:4px;color:var(--ink)}
+.bottom-cta-text p{font-size:14px;color:var(--ink3)}
+.cta-ask-btn{padding:13px 26px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:var(--font-display);font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.cta-ask-btn:hover{background:var(--blue-dark);transform:translateY(-1px)}
+
+/* ══════════════════════════════
+   CHAT PAGE
+══════════════════════════════ */
+.chat-wrap{max-width:740px;margin:0 auto;padding:48px 24px;display:flex;flex-direction:column;height:calc(100vh - 80px)}
+.chat-area{flex:1;overflow-y:auto;padding-bottom:16px;display:flex;flex-direction:column;gap:14px;min-height:200px}
+.chat-msg{display:flex;gap:10px;animation:fadeUp 0.3s ease}
+.chat-msg.user{flex-direction:row-reverse}
+.chat-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.chat-avatar.bot{background:var(--blue);color:#fff;font-family:var(--font-display)}
+.chat-avatar.user-av{background:var(--bg3);color:var(--ink2)}
+.chat-bubble{max-width:78%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.65}
+.chat-bubble.bot{background:var(--white);border:1px solid var(--bg3);color:var(--ink2);border-bottom-left-radius:4px}
+.chat-bubble.user{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--ink3);gap:12px}
+.chat-empty-icon{width:48px;height:48px;background:var(--blue);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:18px;font-weight:700}
+.chat-empty-title{font-family:var(--font-display);font-size:21px;font-weight:500;color:var(--ink2)}
+.chat-suggestions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}
+.chat-suggestion{padding:8px 16px;background:var(--white);border:1.5px solid var(--bg3);border-radius:999px;font-size:13px;color:var(--ink2);cursor:pointer;transition:all 0.2s}
+.chat-suggestion:hover{border-color:var(--blue);color:var(--blue)}
+.typing-indicator{display:flex;gap:4px;align-items:center;padding:12px 16px;background:var(--white);border:1px solid var(--bg3);border-radius:16px;border-bottom-left-radius:4px;width:fit-content}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--ink4);animation:typingBounce 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.chat-input-area{padding-top:14px;border-top:1px solid var(--bg3)}
+.chat-row{display:flex;gap:10px;align-items:flex-end}
+.chat-input{flex:1;padding:12px 16px;background:var(--white);border:1.5px solid var(--bg3);border-radius:12px;color:var(--ink);font-family:var(--font-body);font-size:14px;outline:none;transition:border-color 0.2s;resize:none;min-height:46px;max-height:120px;line-height:1.5}
+.chat-input:focus{border-color:var(--blue)}
+.chat-send-btn{padding:12px 20px;background:var(--blue);color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:var(--font-display);font-size:14px;font-weight:500;transition:all 0.2s;white-space:nowrap}
+.chat-send-btn:hover{background:var(--blue-dark)}
+.chat-send-btn:disabled{opacity:0.4;cursor:not-allowed}
+.chat-footer-note{font-size:12px;color:var(--ink4);margin-top:8px;text-align:center}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:none}
+
+@media(max-width:800px){
+  nav{padding:14px 20px}
+  .hero{padding:100px 20px 56px}
+  .features-intro{grid-template-columns:1fr}
+  .stats-band{flex-direction:column}
+  .stat-item{border-right:none;border-bottom:1px solid rgba(255,255,255,0.12)}
+  .stat-item:last-child{border-bottom:none}
+  footer{flex-direction:column;text-align:center;padding:28px 20px}
+  .results-grid{grid-template-columns:1fr}
+  .score-hero{flex-direction:column;text-align:center;padding:28px 24px}
+  .action-btns{grid-template-columns:1fr}
+  .bottom-cta{flex-direction:column;text-align:center}
+  .user-row{grid-template-columns:1fr;gap:0}
+  .user-row .user-spine,.user-row .user-placeholder{display:none}
+  .user-row .user-content.right{text-align:left}
+  .roadmap{padding-left:40px}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav id="mainNav">
+  <div class="nav-logo" onclick="showPage('landing')">
+    <div class="nav-logo-icon">LG</div>
+    <span class="nav-logo-text">LeaseGuard</span>
+  </div>
+  <div class="nav-right">
+    <button class="nav-login-btn" id="navLoginBtn" onclick="openLoginModal()">Log In</button>
+    <div class="nav-user-pill" id="navUserPill" onclick="toggleUserDropdown()">
+      <div class="nav-user-avatar" id="navUserAvatar">?</div>
+      <span class="nav-user-name" id="navUserName">My Account</span>
+    </div>
+    <button class="nav-cta" onclick="showPage('upload')">Analyze My Lease</button>
+  </div>
+</nav>
+
+<!-- User dropdown -->
+<div class="user-dropdown" id="userDropdown">
+
+<!-- ── LOADING OVERLAY ── -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-title">Analyzing your lease…</div>
+  <div class="loading-step" id="loadingStep">Reading contract structure</div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+  <div class="user-dropdown-header">
+    <div class="user-dropdown-email" id="dropdownEmail">user@example.com</div>
+    <div class="user-dropdown-name" id="dropdownName">My Account</div>
+  </div>
+  <div class="dropdown-divider"></div>
+  <div class="dropdown-item" onclick="openContractsPanel()">
+    <span class="dropdown-icon">&#128196;</span>Previous Contracts
+  </div>
+  <div class="dropdown-item" onclick="showPage('upload')">
+    <span class="dropdown-icon">&#43;</span>New Analysis
+  </div>
+  <div class="dropdown-divider"></div>
+  <div class="dropdown-item danger" onclick="logOut()">
+    <span class="dropdown-icon">&#8592;</span>Sign Out
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     LANDING PAGE
+══════════════════════════════════════ -->
+<div id="landing" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <!-- Geometric pattern SVG -->
+    <div class="geo-bg">
+      <svg width="900" height="900" style="top:-200px;right:-200px" viewBox="0 0 900 900">
+        <circle cx="450" cy="450" r="400" fill="none" stroke="#2d7cc8" stroke-width="1"/>
+        <circle cx="450" cy="450" r="300" fill="none" stroke="#2d7cc8" stroke-width="0.8"/>
+        <circle cx="450" cy="450" r="200" fill="none" stroke="#2d7cc8" stroke-width="0.6"/>
+        <polygon points="450,50 850,700 50,700" fill="none" stroke="#5b9bd5" stroke-width="0.7"/>
+        <polygon points="450,150 750,650 150,650" fill="none" stroke="#5b9bd5" stroke-width="0.5"/>
+        <line x1="50" y1="450" x2="850" y2="450" stroke="#2d7cc8" stroke-width="0.5"/>
+        <line x1="450" y1="50" x2="450" y2="850" stroke="#2d7cc8" stroke-width="0.5"/>
+        <line x1="100" y1="100" x2="800" y2="800" stroke="#5b9bd5" stroke-width="0.4"/>
+        <line x1="800" y1="100" x2="100" y2="800" stroke="#5b9bd5" stroke-width="0.4"/>
+      </svg>
+      <svg width="400" height="400" style="bottom:-100px;left:-80px" viewBox="0 0 400 400">
+        <rect x="50" y="50" width="300" height="300" fill="none" stroke="#2d7cc8" stroke-width="0.8" transform="rotate(15 200 200)"/>
+        <rect x="80" y="80" width="240" height="240" fill="none" stroke="#5b9bd5" stroke-width="0.6" transform="rotate(30 200 200)"/>
+        <rect x="110" y="110" width="180" height="180" fill="none" stroke="#2d7cc8" stroke-width="0.5" transform="rotate(45 200 200)"/>
+      </svg>
+    </div>
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center">
+      <div class="hero-badge"><span class="hero-badge-dot"></span>AI-Powered Contract Analysis</div>
+      <h1>Know what you're<br/><em>signing</em> before you sign</h1>
+      <p class="hero-sub">LeaseGuard reads your lease so you don't need to be a lawyer. Detect risky clauses, understand the fine print, and negotiate with confidence.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('upload')">Analyze My Lease — Free</button>
+        <button class="btn-secondary" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">See How It Works</button>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-visual-label">Sample Analysis Preview</div>
+        <div class="mock-clause"><span class="mock-pill h">HIGH</span><div class="mock-text"><strong>Arbitration Clause</strong>Tenant waives the right to a jury trial and to participate in any class action lawsuit against Landlord.</div></div>
+        <div class="mock-clause"><span class="mock-pill m">MED</span><div class="mock-text"><strong>Automatic Renewal</strong>Lease renews month-to-month unless 60 days written notice is given before expiration date.</div></div>
+        <div class="mock-clause"><span class="mock-pill h">HIGH</span><div class="mock-text"><strong>Non-Refundable Fee</strong>$4,800 administrative fee labeled non-refundable — separate from the security deposit.</div></div>
+        <div class="mock-clause"><span class="mock-pill l">LOW</span><div class="mock-text"><strong>Pet Policy</strong>No pets permitted without prior written consent from Landlord. Standard restriction.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-band reveal">
+    <div class="stats-band-geo">
+      <svg width="100%" height="100%" viewBox="0 0 1200 200" preserveAspectRatio="xMidYMid slice">
+        <line x1="0" y1="100" x2="1200" y2="100" stroke="#fff" stroke-width="1"/>
+        <line x1="300" y1="0" x2="300" y2="200" stroke="#fff" stroke-width="0.6"/>
+        <line x1="600" y1="0" x2="600" y2="200" stroke="#fff" stroke-width="0.6"/>
+        <line x1="900" y1="0" x2="900" y2="200" stroke="#fff" stroke-width="0.6"/>
+        <circle cx="300" cy="100" r="60" fill="none" stroke="#fff" stroke-width="0.5"/>
+        <circle cx="600" cy="100" r="60" fill="none" stroke="#fff" stroke-width="0.5"/>
+        <circle cx="900" cy="100" r="60" fill="none" stroke="#fff" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="stat-item"><div class="stat-num">73%</div><div class="stat-label">of renters sign without fully reading</div></div>
+    <div class="stat-item"><div class="stat-num">8+</div><div class="stat-label">risk categories detected automatically</div></div>
+    <div class="stat-item"><div class="stat-num">30s</div><div class="stat-label">average analysis time per lease</div></div>
+    <div class="stat-item"><div class="stat-num">0</div><div class="stat-label">lawyers needed to understand your rights</div></div>
+  </div>
+
+  <!-- HOW IT WORKS — ROADMAP -->
+  <section class="how-section reveal" id="how">
+    <div style="max-width:900px;margin:0 auto;position:relative;z-index:1">
+      <!-- Subtle geo bg -->
+      <div class="geo-bg" style="opacity:0.07">
+        <svg width="500" height="500" style="right:-100px;top:-50px" viewBox="0 0 500 500">
+          <circle cx="250" cy="250" r="220" fill="none" stroke="#2d7cc8" stroke-width="1.2"/>
+          <circle cx="250" cy="250" r="160" fill="none" stroke="#2d7cc8" stroke-width="0.8"/>
+          <polygon points="250,30 470,390 30,390" fill="none" stroke="#2d7cc8" stroke-width="0.8"/>
+        </svg>
+      </div>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:20px">
+        <div>
+          <div class="section-label">How it works</div>
+          <div class="section-title">Four steps to clarity</div>
+        </div>
+        <p class="section-sub">No legal degree required. Upload, analyze, and walk away knowing exactly what you agreed to.</p>
+      </div>
+
+      <div class="roadmap">
+        <div class="roadmap-step reveal">
+          <div class="roadmap-dot">1</div>
+          <div class="roadmap-step-num">Step 01</div>
+          <div class="roadmap-step-title">Upload or paste your lease</div>
+          <div class="roadmap-step-desc">Drag in a PDF or paste the contract text directly. LeaseGuard works with any standard residential lease agreement, regardless of format or length.</div>
+          <span class="roadmap-step-tag">PDF or plain text</span>
+        </div>
+        <div class="roadmap-step reveal" style="transition-delay:.1s">
+          <div class="roadmap-dot">2</div>
+          <div class="roadmap-step-num">Step 02</div>
+          <div class="roadmap-step-title">AI scans and classifies every clause</div>
+          <div class="roadmap-step-desc">Our model segments your lease into individual clauses and classifies each one — termination, deposit, liability, arbitration, renewal, and more — so nothing gets missed.</div>
+          <span class="roadmap-step-tag">8+ clause categories</span>
+        </div>
+        <div class="roadmap-step reveal" style="transition-delay:.2s">
+          <div class="roadmap-dot">3</div>
+          <div class="roadmap-step-num">Step 03</div>
+          <div class="roadmap-step-title">Risks flagged with plain-English explanations</div>
+          <div class="roadmap-step-desc">Every risky clause is flagged High, Medium, or Low. You get a clear explanation of what each clause means, why it matters, and an overall risk score from 0 to 100.</div>
+          <span class="roadmap-step-tag">Risk scored 0–100</span>
+        </div>
+        <div class="roadmap-step reveal" style="transition-delay:.3s">
+          <div class="roadmap-dot">4</div>
+          <div class="roadmap-step-num">Step 04</div>
+          <div class="roadmap-step-title">Get suggestions — and ask questions</div>
+          <div class="roadmap-step-desc">For each risky clause, receive a practical negotiation suggestion. Then use the live Q&A to ask anything about your specific lease and get answers grounded in your document.</div>
+          <span class="roadmap-step-tag">Negotiation suggestions + Q&A</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section style="background:var(--white);padding:96px 24px;position:relative;overflow:hidden" id="features">
+    <div class="geo-bg" style="opacity:0.06">
+      <svg width="600" height="600" style="left:-100px;top:50px" viewBox="0 0 600 600">
+        <rect x="50" y="50" width="500" height="500" fill="none" stroke="#2d7cc8" stroke-width="1" transform="rotate(10 300 300)"/>
+        <rect x="100" y="100" width="400" height="400" fill="none" stroke="#5b9bd5" stroke-width="0.8" transform="rotate(25 300 300)"/>
+        <rect x="150" y="150" width="300" height="300" fill="none" stroke="#2d7cc8" stroke-width="0.6" transform="rotate(40 300 300)"/>
+      </svg>
+    </div>
+    <div style="max-width:1100px;margin:0 auto;position:relative;z-index:1">
+      <div class="features-intro reveal">
+        <div>
+          <div class="section-label">Key Features</div>
+          <div class="section-title">Everything you need to negotiate with confidence</div>
+        </div>
+        <p class="section-sub" style="margin-bottom:0">Click any feature to go straight to the analyzer and see it in action.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal" onclick="showPage('upload')">
+          <span class="feat-tag risk">Risk Detection</span>
+          <div class="feat-title">Risky Clause Detection</div>
+          <div class="feat-desc">Flags non-refundable fees, sole discretion language, waived rights, unrestricted landlord entry, and 15+ other red-flag patterns automatically.</div>
+          <span class="feat-arrow">↗</span>
+        </div>
+        <div class="feature-card reveal" onclick="showPage('upload')" style="transition-delay:.07s">
+          <span class="feat-tag score">Risk Score</span>
+          <div class="feat-title">Overall Risk Score</div>
+          <div class="feat-desc">A 0–100 risk score weighted by clause severity — know at a glance whether your lease is routine or a serious red flag worth addressing.</div>
+          <span class="feat-arrow">↗</span>
+        </div>
+        <div class="feature-card reveal" onclick="showPage('upload')" style="transition-delay:.14s">
+          <span class="feat-tag explain">Plain English</span>
+          <div class="feat-title">Plain-English Explanations</div>
+          <div class="feat-desc">Every clause decoded: what it means, why it could hurt you, and what you should ask or negotiate before you sign on the dotted line.</div>
+          <span class="feat-arrow">↗</span>
+        </div>
+        <div class="feature-card reveal" onclick="showPage('chat')" style="transition-delay:.21s">
+          <span class="feat-tag qa">Q&A</span>
+          <div class="feat-title">Lease Q&A</div>
+          <div class="feat-desc">Ask anything about your specific contract. Answers are grounded in your own document, not generic legal templates or assumptions.</div>
+          <span class="feat-arrow">↗</span>
+        </div>
+        <div class="feature-card reveal" onclick="showPage('upload')" style="transition-delay:.28s">
+          <span class="feat-tag risk">Classification</span>
+          <div class="feat-title">Smart Clause Classification</div>
+          <div class="feat-desc">Clauses sorted into categories — termination, deposit, maintenance, arbitration, liability, renewal — so nothing slips through the analysis.</div>
+          <span class="feat-arrow">↗</span>
+        </div>
+        <div class="feature-card reveal" onclick="showPage('upload')" style="transition-delay:.35s">
+          <span class="feat-tag explain">Suggestions</span>
+          <div class="feat-title">Negotiation Suggestions</div>
+          <div class="feat-desc">For every risky clause, get a practical suggestion — what to push back on, what to ask for, and what a fair alternative wording looks like.</div>
+          <span class="feat-arrow">↗</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TARGET USERS — ROADMAP ALT STYLE -->
+  <section class="target-section reveal">
+    <div style="max-width:900px;margin:0 auto;position:relative;z-index:1">
+      <!-- subtle geo -->
+      <div class="geo-bg" style="opacity:0.06">
+        <svg width="500" height="700" style="right:-80px;top:0" viewBox="0 0 500 700">
+          <line x1="0" y1="0" x2="500" y2="700" stroke="#2d7cc8" stroke-width="0.8"/>
+          <line x1="500" y1="0" x2="0" y2="700" stroke="#2d7cc8" stroke-width="0.8"/>
+          <circle cx="250" cy="350" r="200" fill="none" stroke="#5b9bd5" stroke-width="0.6"/>
+          <circle cx="250" cy="350" r="130" fill="none" stroke="#2d7cc8" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:20px;margin-bottom:0">
+        <div>
+          <div class="section-label">Who it's for</div>
+          <div class="section-title">Built for anyone who signs a lease</div>
+        </div>
+        <p class="section-sub">Whether you're renting for the first time or your tenth, LeaseGuard puts clarity in your corner.</p>
+      </div>
+
+      <!-- Alternating roadmap rows -->
+      <div class="users-roadmap" style="margin-top:56px">
+
+        <div class="user-row">
+          <div class="user-content">
+            <div class="user-rule accent"></div>
+            <div class="user-name">First-Time Renters</div>
+            <div class="user-desc-text">Moving into your first apartment is exciting — but leases are full of legal language designed to protect the landlord, not you. LeaseGuard levels the playing field and helps you walk in prepared.</div>
+            <div class="user-quote">"I just want to know what I'm agreeing to before I sign."</div>
+          </div>
+          <div class="user-spine">
+            <div class="user-spine-line" style="min-height:40px"></div>
+            <div class="user-spine-dot"></div>
+            <div class="user-spine-line bottom"></div>
+          </div>
+          <div class="user-placeholder"></div>
+        </div>
+
+        <div class="user-row">
+          <div class="user-placeholder"></div>
+          <div class="user-spine">
+            <div class="user-spine-line" style="min-height:40px"></div>
+            <div class="user-spine-dot"></div>
+            <div class="user-spine-line bottom"></div>
+          </div>
+          <div class="user-content right">
+            <div class="user-rule accent"></div>
+            <div class="user-name">International Students</div>
+            <div class="user-desc-text">Navigating a foreign rental market with an unfamiliar legal system is a real challenge. LeaseGuard translates complex clauses into plain, accessible language — no law degree required.</div>
+            <div class="user-quote">"Legal terms are hard enough in my first language."</div>
+          </div>
+        </div>
+
+        <div class="user-row">
+          <div class="user-content">
+            <div class="user-rule accent"></div>
+            <div class="user-name">Young Professionals</div>
+            <div class="user-desc-text">You're busy. You don't have time to read 12 pages of dense legalese before signing a new apartment lease. LeaseGuard gives you the key risks and action points in under a minute.</div>
+            <div class="user-quote">"I need the important parts fast — and what to do about them."</div>
+          </div>
+          <div class="user-spine">
+            <div class="user-spine-line" style="min-height:40px"></div>
+            <div class="user-spine-dot"></div>
+            <div class="user-spine-line bottom"></div>
+          </div>
+          <div class="user-placeholder"></div>
+        </div>
+
+        <div class="user-row">
+          <div class="user-placeholder"></div>
+          <div class="user-spine">
+            <div class="user-spine-line" style="min-height:40px"></div>
+            <div class="user-spine-dot"></div>
+            <div class="user-spine-line bottom" style="display:none"></div>
+          </div>
+          <div class="user-content right">
+            <div class="user-rule accent"></div>
+            <div class="user-name">Savvy Re-Renters</div>
+            <div class="user-desc-text">Even experienced renters encounter new lease templates with unexpected clauses. LeaseGuard catches things you might overlook after signing dozens of agreements over the years.</div>
+            <div class="user-quote">"I want a second pair of eyes on this one — just in case."</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial-section reveal">
+    <div class="geo-bg" style="opacity:0.06">
+      <svg width="800" height="400" style="left:50%;top:50%;transform:translate(-50%,-50%)" viewBox="0 0 800 400">
+        <ellipse cx="400" cy="200" rx="350" ry="160" fill="none" stroke="#fff" stroke-width="1"/>
+        <ellipse cx="400" cy="200" rx="250" ry="110" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="0" y1="200" x2="800" y2="200" stroke="#fff" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div style="position:relative;z-index:1">
+      <div class="section-label">Why it matters</div>
+      <p class="quote">"Most renters don't realize they've waived their right to sue until they actually need to exercise it. LeaseGuard changes that — knowledge is negotiating power."</p>
+      <div class="quote-attr">Built for renters who deserve to understand what they sign</div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section reveal">
+    <div style="max-width:600px;margin:0 auto;position:relative;z-index:1">
+      <div class="section-label">Get started</div>
+      <div class="section-title">Ready to read the fine print?</div>
+      <p class="section-sub" style="margin:0 auto 40px">Upload your lease and get a full risk analysis in under a minute. Free, private, no account needed.</p>
+      <button class="btn-primary" onclick="showPage('upload')" style="font-size:17px;padding:17px 44px">Analyze My Lease Now</button>
+      <p class="disclaimer">LeaseGuard does not provide legal advice. Always consult a licensed attorney for legal decisions.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">LeaseGuard</div>
+    <div class="footer-links">
+      <span class="footer-note">Not legal advice. For informational purposes only. 2026 LeaseGuard</span>
+      <button class="footer-link" onclick="showPage('privacy')">Privacy Policy</button>
+      <button class="footer-link" onclick="showPage('privacy')">Terms of Use</button>
+    </div>
+  </footer>
+
+</div><!-- /landing -->
+
+<!-- ══════════════════════════════════════
+     UPLOAD PAGE
+══════════════════════════════════════ -->
+<div id="upload" class="page inner-page">
+  <div class="inner-wrap">
+    <button class="back-btn" onclick="showPage('landing')">← Back to home</button>
+    <div class="page-header">
+      <h2>Analyze Your Lease</h2>
+      <p>Upload a PDF or paste your contract text, then choose what you'd like to do.</p>
+    </div>
+    <div class="upload-area" id="dropZone">
+      <div class="upload-title">Drop your lease file here</div>
+      <div class="upload-sub">PDF or .txt — or <span onclick="document.getElementById('fileInput').click()">browse files</span></div>
+      <input type="file" id="fileInput" accept=".pdf,.txt"/>
+      <div id="fileNameDisplay" style="margin-top:10px;font-size:13px;color:var(--blue);display:none"></div>
+    </div>
+    <div class="divider">or paste contract text</div>
+    <textarea class="paste-area" id="contractText" placeholder="Paste your lease agreement here…&#10;&#10;Example: Section 4. SECURITY DEPOSIT. Tenant shall deposit with Landlord the sum of $2,500 as security for the faithful performance of all terms…"></textarea>
+    <button class="sample-btn" onclick="document.getElementById('contractText').value=getSampleLease()">Load sample lease</button>
+    <div class="error-msg" id="uploadError"></div>
+    <div class="action-btns">
+      <button class="action-btn primary" onclick="goToResults()">
+        Analyze Contract
+        <small>Risk score, clause breakdown &amp; suggestions</small>
+      </button>
+      <button class="action-btn secondary" onclick="goToChat()">
+        Ask Questions
+        <small>Chat with AI about your lease</small>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     RESULTS PAGE
+══════════════════════════════════════ -->
+<div id="results" class="page inner-page">
+  <div class="inner-wrap" style="max-width:860px">
+    <button class="back-btn" onclick="showPage('upload')">← Back</button>
+    <div class="page-header">
+      <h2>Contract Analysis</h2>
+      <p>Risk breakdown and negotiation suggestions for your lease.</p>
+    </div>
+
+    <!-- Score Hero — populated by JS -->
+    <div class="score-hero" id="scoreHero" style="display:none">
+      <div class="score-circle">
+        <span class="num" id="scoreNum">—</span>
+        <span class="denom">/100</span>
+      </div>
+      <div class="score-right" style="flex:1">
+        <h3 id="scoreHeadline"></h3>
+        <p id="scoreSummary"></p>
+        <div class="score-bar-track"><div class="score-bar-fill" id="scoreBar" style="width:0%"></div></div>
+        <div class="score-meta" id="scoreMeta"></div>
+      </div>
+    </div>
+
+    <!-- Two panels — populated by JS -->
+    <div class="results-grid" id="resultsGrid" style="display:none">
+      <div class="result-panel">
+        <div class="panel-label">Risk Breakdown by Category</div>
+        <div class="risk-bars" id="riskBars"></div>
+      </div>
+      <div class="result-panel">
+        <div class="panel-label">Top Negotiation Priorities</div>
+        <div class="neg-items" id="negItems"></div>
+      </div>
+    </div>
+
+    <!-- Clause list — populated by JS -->
+    <div id="clauseSectionLabel" class="clause-section-label" style="display:none">Clause-by-Clause Breakdown</div>
+    <div class="clause-full-list" id="clausesList"></div>
+
+    <!-- Tenant suggestions — populated by JS -->
+    <div class="suggestions-panel" id="suggestionsPanel" style="display:none">
+      <div class="panel-label">Tenant Action Plan</div>
+      <div class="suggestions-list" id="suggestionsList"></div>
+    </div>
+
+    <!-- Questions to ask landlord — populated by JS -->
+    <div class="questions-panel" id="questionsPanel" style="display:none">
+      <div class="panel-label" style="color:var(--blue)">Questions to Ask Your Landlord Before Signing</div>
+      <div id="questionsList"></div>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="bottom-cta" id="bottomCta" style="display:none">
+      <div class="bottom-cta-text">
+        <h4>Have questions about your lease?</h4>
+        <p>Ask our AI anything about specific clauses — answers are grounded in your actual document.</p>
+      </div>
+      <button class="cta-ask-btn" onclick="goToChat()">Ask Questions about this Lease</button>
+    </div>
+
+    <!-- Empty / error state -->
+    <div class="results-placeholder" id="resultsPlaceholder">
+      <h3>No analysis yet</h3>
+      <p>Go back and upload or paste a lease to get started.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHAT PAGE
+══════════════════════════════════════ -->
+<div id="chat" class="page inner-page">
+  <div class="chat-wrap">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-shrink:0">
+      <button class="back-btn" style="margin-bottom:0" onclick="chatBack()">← Back</button>
+      <div style="font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--ink)">Lease Assistant</div>
+      <div style="width:80px"></div>
+    </div>
+
+    <div class="chat-area" id="chatArea">
+      <div class="chat-empty" id="chatEmpty">
+        <div class="chat-empty-icon">LG</div>
+        <div class="chat-empty-title">Ask about your lease</div>
+        <p style="font-size:14px;color:var(--ink3);max-width:380px;line-height:1.6">I can answer questions based on your uploaded contract. Try one of the suggestions below or ask your own question.</p>
+        <div class="chat-suggestions">
+          <span class="chat-suggestion" onclick="sendSuggestion(this)">Can my landlord enter without notice?</span>
+          <span class="chat-suggestion" onclick="sendSuggestion(this)">What happens if I break the lease early?</span>
+          <span class="chat-suggestion" onclick="sendSuggestion(this)">Is the non-refundable fee legal?</span>
+          <span class="chat-suggestion" onclick="sendSuggestion(this)">What are my maintenance obligations?</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="chat-row">
+        <textarea class="chat-input" id="chatInput" placeholder="Ask anything about your lease…" rows="1" onkeydown="handleChatKey(event)"></textarea>
+        <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">Send</button>
+      </div>
+      <div class="chat-footer-note">Answers are based on your uploaded lease. Not legal advice.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     LOGIN MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="loginModal" onclick="handleModalOverlayClick(event)">
+  <div class="modal" id="loginModalBox">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeLoginModal()">&#10005;</button>
+      <div class="modal-logo">
+        <div class="modal-logo-icon">LG</div>
+        <span class="modal-logo-text">LeaseGuard</span>
+      </div>
+      <div class="modal-title" id="modalTitle">Welcome back</div>
+      <div class="modal-sub" id="modalSub">Sign in to access your previous contract analyses.</div>
+    </div>
+    <div class="modal-body">
+      <!-- Tab row -->
+      <div class="modal-tab-row" id="modalTabRow">
+        <button class="modal-tab active" onclick="switchTab('login')">Sign In</button>
+        <button class="modal-tab" onclick="switchTab('register')">Create Account</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div class="modal-form" id="loginForm">
+        <button class="form-google" onclick="handleSocialAuth('Google')">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.909-2.259c-.806.54-1.837.86-3.047.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Continue with Google
+        </button>
+        <div class="form-divider">or continue with email</div>
+        <div class="form-field">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="loginEmail" placeholder="you@example.com"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="loginPassword" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"/>
+        </div>
+        <div style="text-align:right;margin-top:-6px">
+          <span style="font-size:13px;color:var(--blue);cursor:pointer" onclick="switchTab('forgot')">Forgot password?</span>
+        </div>
+        <button class="form-submit" onclick="handleLogin()">Sign In</button>
+        <p class="form-terms">By signing in you agree to our <a onclick="closeLoginModal();showPage('privacy')">Terms of Use</a> and <a onclick="closeLoginModal();showPage('privacy')">Privacy Policy</a>.</p>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div class="modal-form hidden" id="registerForm">
+        <button class="form-google" onclick="handleSocialAuth('Google')">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.909-2.259c-.806.54-1.837.86-3.047.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Sign up with Google
+        </button>
+        <div class="form-divider">or use email</div>
+        <div class="form-field">
+          <label class="form-label">Full name</label>
+          <input class="form-input" type="text" id="regName" placeholder="Jane Smith"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="regEmail" placeholder="you@example.com"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="regPassword" placeholder="Min. 8 characters"/>
+        </div>
+        <button class="form-submit" onclick="handleRegister()">Create Account</button>
+        <p class="form-terms">By creating an account you agree to our <a onclick="closeLoginModal();showPage('privacy')">Terms of Use</a> and <a onclick="closeLoginModal();showPage('privacy')">Privacy Policy</a>.</p>
+      </div>
+
+      <!-- FORGOT PASSWORD -->
+      <div class="modal-form hidden" id="forgotForm">
+        <div class="form-field">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="forgotEmail" placeholder="you@example.com"/>
+        </div>
+        <button class="form-submit" onclick="handleForgot()">Send Reset Link</button>
+        <div style="text-align:center;margin-top:12px">
+          <span style="font-size:13px;color:var(--blue);cursor:pointer" onclick="switchTab('login')">&#8592; Back to sign in</span>
+        </div>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div class="modal-success hidden" id="modalSuccess">
+        <div class="modal-success-icon">&#10003;</div>
+        <div class="modal-success-title" id="successTitle">Check your email</div>
+        <div class="modal-success-sub" id="successSub">We sent a link to your email address. Click it to sign in.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PREVIOUS CONTRACTS MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="contractsModal" onclick="handleContractsOverlayClick(event)">
+  <div class="modal" id="contractsModalBox" style="max-width:480px">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeContractsModal()">&#10005;</button>
+      <div style="margin-top:8px">
+        <div class="modal-title">Previous Contracts</div>
+        <div class="modal-sub">Your saved lease analyses.</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="contractsListArea">
+        <!-- Sample contracts for logged-in users -->
+        <div class="contract-item" onclick="closeContractsModal();showPage('results')">
+          <div class="contract-icon">&#128196;</div>
+          <div class="contract-info">
+            <div class="contract-name">214 Oak Street, Apt 3B</div>
+            <div class="contract-meta">Analyzed May 7, 2026 &middot; 10 clauses</div>
+          </div>
+          <span class="contract-score high">74 / High</span>
+        </div>
+        <div class="contract-item" onclick="closeContractsModal();showPage('results')">
+          <div class="contract-icon">&#128196;</div>
+          <div class="contract-info">
+            <div class="contract-name">88 Maple Ave, Unit 12</div>
+            <div class="contract-meta">Analyzed Mar 2, 2026 &middot; 8 clauses</div>
+          </div>
+          <span class="contract-score med">48 / Med</span>
+        </div>
+        <div class="contract-item" onclick="closeContractsModal();showPage('results')">
+          <div class="contract-icon">&#128196;</div>
+          <div class="contract-info">
+            <div class="contract-name">550 Park Blvd, Studio</div>
+            <div class="contract-meta">Analyzed Jan 15, 2026 &middot; 7 clauses</div>
+          </div>
+          <span class="contract-score low">28 / Low</span>
+        </div>
+      </div>
+      <button class="form-submit" style="margin-top:20px" onclick="closeContractsModal();showPage('upload')">
+        Analyze a New Contract
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PRIVACY PAGE
+══════════════════════════════════════ -->
+<div id="privacy" class="page privacy-page">
+  <div class="privacy-wrap">
+    <button class="back-btn" onclick="showPage('landing')">&#8592; Back to home</button>
+    <div class="privacy-hero">
+      <h1>Privacy Policy &amp; Terms of Use</h1>
+      <p>Last updated: May 8, 2026 &mdash; Effective immediately for all users.</p>
+    </div>
+
+    <div class="privacy-toc">
+      <div class="privacy-toc-title">Table of Contents</div>
+      <ol>
+        <li onclick="document.getElementById('ps1').scrollIntoView({behavior:'smooth'})">Information We Collect</li>
+        <li onclick="document.getElementById('ps2').scrollIntoView({behavior:'smooth'})">How We Use Your Information</li>
+        <li onclick="document.getElementById('ps3').scrollIntoView({behavior:'smooth'})">Document & Contract Data</li>
+        <li onclick="document.getElementById('ps4').scrollIntoView({behavior:'smooth'})">Data Retention</li>
+        <li onclick="document.getElementById('ps5').scrollIntoView({behavior:'smooth'})">Third-Party Services</li>
+        <li onclick="document.getElementById('ps6').scrollIntoView({behavior:'smooth'})">Your Rights</li>
+        <li onclick="document.getElementById('ps7').scrollIntoView({behavior:'smooth'})">Terms of Use</li>
+        <li onclick="document.getElementById('ps8').scrollIntoView({behavior:'smooth'})">Disclaimers &amp; Limitation of Liability</li>
+        <li onclick="document.getElementById('ps9').scrollIntoView({behavior:'smooth'})">Contact Us</li>
+      </ol>
+    </div>
+
+    <div class="privacy-section" id="ps1">
+      <div class="privacy-section-num">Section 01</div>
+      <h2>Information We Collect</h2>
+      <p>LeaseGuard collects only the information necessary to provide our lease analysis service. We are committed to minimal data collection and transparent handling of everything you share with us.</p>
+      <h3>Information you provide directly</h3>
+      <ul>
+        <li><strong>Account information:</strong> When you create an account, we collect your email address, name, and a hashed password. We never store passwords in plain text.</li>
+        <li><strong>Contract documents:</strong> Lease text or PDF content you upload or paste for analysis. See Section 3 for how this is handled.</li>
+        <li><strong>Communications:</strong> If you contact us for support, we retain those communications to assist you.</li>
+      </ul>
+      <h3>Information collected automatically</h3>
+      <ul>
+        <li><strong>Usage data:</strong> Pages visited, features used, and session duration — collected in aggregate and anonymized.</li>
+        <li><strong>Device information:</strong> Browser type, operating system, and screen resolution for compatibility purposes.</li>
+        <li><strong>IP address:</strong> Used for security purposes, rate limiting, and approximate geographic region (country-level only). Not stored permanently.</li>
+      </ul>
+    </div>
+
+    <div class="privacy-section" id="ps2">
+      <div class="privacy-section-num">Section 02</div>
+      <h2>How We Use Your Information</h2>
+      <p>We use the information we collect solely to operate and improve LeaseGuard. We do not sell, rent, or share your personal information with third parties for their marketing purposes.</p>
+      <table class="privacy-table">
+        <tr><th>Purpose</th><th>Legal Basis</th></tr>
+        <tr><td>Providing lease analysis and Q&A functionality</td><td>Performance of contract / Legitimate interest</td></tr>
+        <tr><td>Storing your previous analyses for retrieval</td><td>Consent (account creation)</td></tr>
+        <tr><td>Sending account verification and password reset emails</td><td>Performance of contract</td></tr>
+        <tr><td>Improving model accuracy and product features</td><td>Legitimate interest (anonymized data only)</td></tr>
+        <tr><td>Preventing fraud and abuse</td><td>Legitimate interest</td></tr>
+        <tr><td>Complying with legal obligations</td><td>Legal obligation</td></tr>
+      </table>
+    </div>
+
+    <div class="privacy-section" id="ps3">
+      <div class="privacy-section-num">Section 03</div>
+      <h2>Document &amp; Contract Data</h2>
+      <p>We understand that lease agreements contain sensitive personal and financial information. We treat your uploaded documents with the highest level of care.</p>
+      <ul>
+        <li><strong>Guest usage (no account):</strong> Contract text processed entirely in-session and never written to permanent storage. Once your browser tab closes, the data is gone.</li>
+        <li><strong>Logged-in users:</strong> Your analyzed contracts are stored securely and associated only with your account. We encrypt all stored documents at rest using AES-256.</li>
+        <li><strong>AI processing:</strong> Contract text is sent to Anthropic's API for analysis. Anthropic does not use your data to train models and processes it solely to return analysis results. See Anthropic's Privacy Policy for details.</li>
+        <li><strong>No human review:</strong> No LeaseGuard employee reads your uploaded contracts except where required by law or to investigate abuse reports.</li>
+        <li><strong>No third-party sharing:</strong> Your contract content is never shared with, sold to, or accessible by landlords, real estate companies, data brokers, or any third party.</li>
+      </ul>
+    </div>
+
+    <div class="privacy-section" id="ps4">
+      <div class="privacy-section-num">Section 04</div>
+      <h2>Data Retention</h2>
+      <p>We retain your data only as long as necessary to provide our service or as required by law.</p>
+      <ul>
+        <li><strong>Account data:</strong> Retained until you delete your account, after which it is permanently erased within 30 days.</li>
+        <li><strong>Saved contracts:</strong> Retained as long as your account is active. You may delete individual analyses at any time from your account dashboard.</li>
+        <li><strong>Session-only data (guest):</strong> Not stored beyond the current browser session.</li>
+        <li><strong>Anonymized analytics:</strong> Retained indefinitely in aggregate form with no personally identifiable information.</li>
+        <li><strong>Legal hold:</strong> In certain circumstances we may be required to retain data longer if required by applicable law.</li>
+      </ul>
+    </div>
+
+    <div class="privacy-section" id="ps5">
+      <div class="privacy-section-num">Section 05</div>
+      <h2>Third-Party Services</h2>
+      <p>LeaseGuard uses a limited number of trusted third-party services to operate. We have assessed each for data protection compliance.</p>
+      <ul>
+        <li><strong>Anthropic:</strong> Provides the AI language model that powers contract analysis and Q&A. Contract text is transmitted to their API for processing. <a href="https://www.anthropic.com/privacy" target="_blank" style="color:var(--blue)">Anthropic Privacy Policy ↗</a></li>
+        <li><strong>Authentication provider:</strong> Handles secure account creation and login. Your password is never accessible to LeaseGuard in plain text.</li>
+        <li><strong>Cloud hosting:</strong> Infrastructure provider with SOC 2 Type II certification and data processed in the United States.</li>
+        <li><strong>Analytics:</strong> Privacy-first analytics with no cross-site tracking, no fingerprinting, and data fully anonymized before processing.</li>
+      </ul>
+      <p>We do not use advertising networks, social media tracking pixels, or any behavioral tracking technology.</p>
+    </div>
+
+    <div class="privacy-section" id="ps6">
+      <div class="privacy-section-num">Section 06</div>
+      <h2>Your Rights</h2>
+      <p>Depending on your jurisdiction, you may have the following rights regarding your personal data. We honor these requests regardless of your location.</p>
+      <ul>
+        <li><strong>Access:</strong> Request a copy of all personal data we hold about you.</li>
+        <li><strong>Correction:</strong> Request correction of inaccurate or incomplete information.</li>
+        <li><strong>Deletion:</strong> Request permanent deletion of your account and all associated data.</li>
+        <li><strong>Portability:</strong> Request your data in a machine-readable format (JSON or CSV).</li>
+        <li><strong>Restriction:</strong> Request that we restrict processing of your data in certain circumstances.</li>
+        <li><strong>Objection:</strong> Object to processing based on legitimate interests.</li>
+        <li><strong>Withdraw consent:</strong> Where processing is based on consent, you may withdraw it at any time without affecting prior lawful processing.</li>
+      </ul>
+      <p>To exercise any of these rights, contact us at privacy@leaseguard.app. We will respond within 30 days.</p>
+    </div>
+
+    <div class="privacy-section" id="ps7">
+      <div class="privacy-section-num">Section 07</div>
+      <h2>Terms of Use</h2>
+      <p>By accessing or using LeaseGuard, you agree to these Terms of Use. If you do not agree, please do not use the service.</p>
+      <h3>Permitted Use</h3>
+      <p>LeaseGuard is provided for personal, non-commercial use only. You may use the service to analyze lease agreements for your own residential rental decisions. You may not use the service to analyze contracts on behalf of others for compensation, resell access, or use automated means to access the service.</p>
+      <h3>Not Legal Advice</h3>
+      <p>LeaseGuard provides educational information and AI-generated analysis to help you understand the content of lease agreements. This is not legal advice. The service does not establish an attorney-client relationship. For legal decisions, consult a licensed attorney in your jurisdiction. Nothing in the analysis should be relied upon as a definitive legal conclusion.</p>
+      <h3>AI-Generated Content</h3>
+      <p>Analysis is generated by artificial intelligence and may contain errors, omissions, or inaccuracies. LeaseGuard does not guarantee the completeness or accuracy of any analysis. Always review the original contract and consult qualified professionals before making binding decisions.</p>
+      <h3>Account Responsibilities</h3>
+      <ul>
+        <li>You are responsible for maintaining the confidentiality of your account credentials.</li>
+        <li>You must not share your account with others.</li>
+        <li>You must provide accurate information when creating an account.</li>
+        <li>You must be 18 years of age or older to create an account.</li>
+      </ul>
+      <h3>Prohibited Conduct</h3>
+      <ul>
+        <li>Uploading content you do not have the right to share.</li>
+        <li>Attempting to reverse-engineer, scrape, or extract the underlying AI model.</li>
+        <li>Using the service to harass, harm, or deceive others.</li>
+        <li>Circumventing any technical restrictions or security measures.</li>
+      </ul>
+    </div>
+
+    <div class="privacy-section" id="ps8">
+      <div class="privacy-section-num">Section 08</div>
+      <h2>Disclaimers &amp; Limitation of Liability</h2>
+      <p>LeaseGuard is provided "as is" without warranties of any kind, express or implied. We do not warrant that the service will be uninterrupted, error-free, or that any analysis will be accurate, complete, or suitable for your specific situation.</p>
+      <p>To the maximum extent permitted by applicable law, LeaseGuard and its operators shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the service — including but not limited to reliance on any analysis output, failure to detect a problematic clause, or any decisions made based on the service.</p>
+      <p>Our total liability to you for any claim arising from use of the service shall not exceed the greater of $50 or the amount you paid to LeaseGuard in the 12 months preceding the claim.</p>
+      <p>Some jurisdictions do not allow the exclusion of certain warranties or limitations on liability. In such jurisdictions, our liability is limited to the fullest extent permitted by law.</p>
+    </div>
+
+    <div class="privacy-section" id="ps9">
+      <div class="privacy-section-num">Section 09</div>
+      <h2>Changes to This Policy</h2>
+      <p>We may update this Privacy Policy and Terms of Use from time to time. When we make material changes, we will notify registered users via email at least 14 days before the changes take effect. Continued use of the service after changes take effect constitutes acceptance of the updated policy.</p>
+      <p>The date at the top of this document reflects the most recent revision.</p>
+    </div>
+
+    <div class="privacy-contact">
+      <h3>Contact Us</h3>
+      <p>For privacy requests, data deletion, or questions about these terms, please contact us at <a href="mailto:privacy@leaseguard.app">privacy@leaseguard.app</a>. We aim to respond to all inquiries within 5 business days.</p>
+    </div>
+
+    <div class="privacy-updated">
+      LeaseGuard &mdash; Privacy Policy &amp; Terms of Use &mdash; Version 1.0 &mdash; Last updated May 8, 2026
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// LeaseGuard Frontend  — all API calls go to /api/* backend
+// ANTHROPIC_API_KEY lives in server env only, never here
+// ─────────────────────────────────────────────────────────────
+
+let contractContent = '';
+let chatHistory = [];
+let fromResults = false;
+let currentUser = null;
+
+/* ── Page routing ────────────────────────────────────────────── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  closeUserDropdown();
+}
+
+function goToChat() {
+  const text = contractContent || document.getElementById('contractText')?.value?.trim();
+  if (text) contractContent = text;
+  fromResults = document.getElementById('results').classList.contains('active');
+  showPage('chat');
+}
+
+function chatBack() {
+  fromResults ? showPage('results') : showPage('upload');
+}
+
+/* ── Loading overlay ─────────────────────────────────────────── */
+const LOADING_STEPS = [
+  'Reading contract structure…',
+  'Classifying clause types…',
+  'Running risk detection…',
+  'Generating plain-English explanations…',
+  'Building negotiation suggestions…',
+];
+
+function showLoading() {
+  document.getElementById('loadingOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  let i = 0;
+  const el = document.getElementById('loadingStep');
+  el.textContent = LOADING_STEPS[0];
+  const iv = setInterval(() => {
+    i++;
+    if (i < LOADING_STEPS.length) el.textContent = LOADING_STEPS[i];
+    else clearInterval(iv);
+  }, 1800);
+  return iv;
+}
+
+function hideLoading(intervalId) {
+  clearInterval(intervalId);
+  document.getElementById('loadingOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+/* ── Toast ───────────────────────────────────────────────────── */
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '') + ' show';
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ── Analyze contract ────────────────────────────────────────── */
+async function goToResults() {
+  const text = contractContent || document.getElementById('contractText').value.trim();
+  const err = document.getElementById('uploadError');
+
+  if (!text || text.length < 30) {
+    err.textContent = 'Please upload or paste your contract text first.';
+    err.classList.add('show');
+    return;
+  }
+  err.classList.remove('show');
+  contractContent = text;
+
+  const iv = showLoading();
+
+  try {
+    const res = await fetch('/api/analyze-lease', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ leaseText: text }),
+    });
+
+    const data = await res.json();
+    hideLoading(iv);
+
+    if (!res.ok) {
+      showToast(data.error || 'Analysis failed. Please try again.', true);
+      return;
+    }
+
+    renderResults(data);
+    showPage('results');
+  } catch (e) {
+    hideLoading(iv);
+    showToast('Could not reach the server. Please check your connection.', true);
+  }
+}
+
+/* ── Render results ──────────────────────────────────────────── */
+function renderResults(data) {
+  const score = data.risk_score || 0;
+  const level = data.risk_level || (score >= 70 ? 'high' : score >= 40 ? 'medium' : 'low');
+
+  // ── Score hero
+  const scoreHero = document.getElementById('scoreHero');
+  scoreHero.style.display = 'flex';
+  document.getElementById('resultsPlaceholder').style.display = 'none';
+
+  const numEl = document.getElementById('scoreNum');
+  numEl.textContent = score;
+  numEl.className = 'num ' + level;
+
+  document.getElementById('scoreHeadline').textContent =
+    level === 'high' ? 'High Risk — Review Before Signing' :
+    level === 'medium' ? 'Moderate Risk — Some Concerns' :
+    'Lower Risk — Looks Reasonable';
+
+  document.getElementById('scoreSummary').textContent = data.summary || '';
+
+  const bar = document.getElementById('scoreBar');
+  bar.className = 'score-bar-fill ' + level;
+  setTimeout(() => { bar.style.width = score + '%'; }, 80);
+
+  const highs = (data.risky_clauses || []).filter(c => c.risk_level === 'high').length;
+  const meds  = (data.risky_clauses || []).filter(c => c.risk_level === 'medium').length;
+  const lows  = (data.risky_clauses || []).filter(c => c.risk_level === 'low').length;
+
+  document.getElementById('scoreMeta').innerHTML =
+    (highs ? `<span class="score-chip danger">${highs} High Risk</span>` : '') +
+    (meds  ? `<span class="score-chip warn">${meds} Medium Risk</span>` : '') +
+    (lows  ? `<span class="score-chip safe">${lows} Low Risk</span>` : '') +
+    `<span class="score-chip">${(data.risky_clauses || []).length} clauses found</span>`;
+
+  // ── Risk bars & negotiation priorities
+  const grid = document.getElementById('resultsGrid');
+  grid.style.display = 'grid';
+
+  // Build category → max risk map
+  const catMap = {};
+  (data.risky_clauses || []).forEach(c => {
+    const cat = c.category || 'Other';
+    const existing = catMap[cat];
+    const rank = r => r === 'high' ? 3 : r === 'medium' ? 2 : 1;
+    if (!existing || rank(c.risk_level) > rank(existing.risk_level)) catMap[cat] = c;
+  });
+
+  document.getElementById('riskBars').innerHTML = Object.entries(catMap)
+    .sort((a,b) => {
+      const r = x => x.risk_level === 'high' ? 3 : x.risk_level === 'medium' ? 2 : 1;
+      return r(b[1]) - r(a[1]);
+    })
+    .map(([cat, clause]) => {
+      const pct = clause.risk_level === 'high' ? 100 : clause.risk_level === 'medium' ? 65 : 30;
+      const cls = clause.risk_level === 'high' ? 'h' : clause.risk_level === 'medium' ? 'm' : 'l';
+      return `<div class="risk-bar-item">
+        <span class="risk-bar-label">${escHtml(cat)}</span>
+        <div class="risk-bar-track-sm"><div class="risk-bar-fill-sm ${cls}" style="width:${pct}%"></div></div>
+        <span class="risk-bar-count">1</span>
+      </div>`;
+    }).join('');
+
+  // Negotiation priorities — top 4 high/medium clauses
+  const topClauses = (data.risky_clauses || [])
+    .filter(c => c.risk_level === 'high' || c.risk_level === 'medium')
+    .slice(0, 4);
+
+  document.getElementById('negItems').innerHTML = topClauses.map(c =>
+    `<div class="neg-item">
+      <div class="neg-clause">${escHtml(c.title)}</div>
+      <div class="neg-text">${escHtml(c.suggestion)}</div>
+    </div>`
+  ).join('') || '<div style="font-size:14px;color:var(--ink3)">No high-priority concerns found.</div>';
+
+  // ── Clause cards
+  document.getElementById('clauseSectionLabel').style.display = 'block';
+  const list = document.getElementById('clausesList');
+  list.innerHTML = '';
+
+  (data.risky_clauses || []).forEach((c, i) => {
+    const rl = c.risk_level || 'low';
+    const badge = rl === 'high' ? 'HIGH' : rl === 'medium' ? 'MED' : 'LOW';
+    const card = document.createElement('div');
+    card.className = `clause-card risk-${rl}${i === 0 ? ' open' : ''}`;
+    card.innerHTML = `
+      <div class="clause-header" onclick="this.closest('.clause-card').classList.toggle('open')">
+        <span class="clause-badge ${rl}">${badge}</span>
+        <div class="clause-title-block">
+          <div class="clause-title">${escHtml(c.title)}</div>
+          <div class="clause-category">${escHtml(c.category)}</div>
+        </div>
+        <span class="clause-chevron">▾</span>
+      </div>
+      <div class="clause-body">
+        <div class="clause-original">${escHtml(c.original_text)}</div>
+        <div class="expl-block">
+          <div class="expl-label">What this means</div>
+          <div class="expl-text">${escHtml(c.explanation)}</div>
+        </div>
+        ${c.why_risky ? `<div class="expl-block">
+          <div class="expl-label">Why it matters</div>
+          <div class="expl-text" style="color:${rl==='high'?'var(--danger)':rl==='medium'?'var(--warn)':'var(--safe)'}">${escHtml(c.why_risky)}</div>
+        </div>` : ''}
+        <div class="suggestion-block">
+          <div class="suggestion-label">Suggestion</div>
+          <div class="suggestion-text">${escHtml(c.suggestion)}</div>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+
+  // ── Tenant action plan
+  const suggestions = data.tenant_friendly_suggestions || [];
+  if (suggestions.length) {
+    document.getElementById('suggestionsPanel').style.display = 'block';
+    document.getElementById('suggestionsList').innerHTML = suggestions.map((s, i) =>
+      `<div class="suggestion-item">
+        <div class="suggestion-num">${i + 1}</div>
+        <div class="suggestion-text">${escHtml(s)}</div>
+      </div>`
+    ).join('');
+  }
+
+  // ── Questions to ask landlord
+  const questions = data.questions_to_ask_landlord || [];
+  if (questions.length) {
+    document.getElementById('questionsPanel').style.display = 'block';
+    document.getElementById('questionsList').innerHTML = questions.map(q =>
+      `<div class="question-item">
+        <div class="question-icon">?</div>
+        <div class="question-text">${escHtml(q)}</div>
+      </div>`
+    ).join('');
+  }
+
+  document.getElementById('bottomCta').style.display = 'flex';
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ── Nav scroll ──────────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').style.background =
+    window.scrollY > 40 ? 'rgba(244,248,252,0.98)' : 'rgba(244,248,252,0.94)';
+});
+
+/* ── Scroll reveal ───────────────────────────────────────────── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+/* ── File upload ─────────────────────────────────────────────── */
+document.getElementById('fileInput').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (f) await readFile(f);
+});
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', async e => {
+  e.preventDefault(); dz.classList.remove('drag');
+  const f = e.dataTransfer.files[0]; if (f) await readFile(f);
+});
+async function readFile(f) {
+  const d = document.getElementById('fileNameDisplay');
+  d.style.display = 'block'; d.textContent = f.name;
+  dz.classList.add('has-file');
+  contractContent = await f.text();
+  document.getElementById('contractText').value =
+    contractContent.substring(0, 300) + (contractContent.length > 300 ? '…' : '');
+}
+
+function getSampleLease() {
+  return `RESIDENTIAL LEASE AGREEMENT\n\n1. PARTIES. This lease is between LandlordCo LLC ("Landlord") and the undersigned tenant ("Tenant").\n\n2. PREMISES. 214 Oak Street, Apt 3B.\n\n3. TERM. August 1, 2024 – July 31, 2025. This lease shall automatically renew month-to-month unless Tenant provides 60 days written notice.\n\n4. RENT. $2,400/month. Late fee of $150 after the 3rd. Landlord may increase rent with 30 days notice.\n\n5. SECURITY DEPOSIT. $4,800 non-refundable administrative fee plus $2,400 security deposit. Deductions at Landlord's sole discretion.\n\n6. MAINTENANCE. Tenant responsible for all repairs under $300 and all damage caused by Tenant, guests, or acts of nature.\n\n7. ENTRY. Landlord may enter at any time. Notice provided when reasonably possible.\n\n8. TERMINATION. Early termination: all remaining rent + $1,500 fee + re-letting costs at Landlord's sole discretion.\n\n9. ARBITRATION. All disputes via binding arbitration. Tenant waives jury trial and class action rights.\n\n10. LIABILITY. Tenant indemnifies Landlord from all claims. Landlord not liable for injuries on premises.`;
+}
+
+/* ── Login modal ─────────────────────────────────────────────── */
+function openLoginModal() {
+  closeUserDropdown();
+  document.getElementById('loginModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  switchTab('login');
+}
+
+function closeLoginModal() {
+  document.getElementById('loginModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function handleModalOverlayClick(e) {
+  if (e.target === document.getElementById('loginModal')) closeLoginModal();
+}
+
+function switchTab(tab) {
+  const loginF = document.getElementById('loginForm');
+  const regF = document.getElementById('registerForm');
+  const forgotF = document.getElementById('forgotForm');
+  const success = document.getElementById('modalSuccess');
+  const tabRow = document.getElementById('modalTabRow');
+  const title = document.getElementById('modalTitle');
+  const sub = document.getElementById('modalSub');
+  const tabs = document.querySelectorAll('.modal-tab');
+
+  [loginF, regF, forgotF, success].forEach(el => el.classList.add('hidden'));
+  tabs.forEach(t => t.classList.remove('active'));
+  tabRow.style.display = 'flex';
+
+  if (tab === 'login') {
+    loginF.classList.remove('hidden');
+    tabs[0].classList.add('active');
+    title.textContent = 'Welcome back';
+    sub.textContent = 'Sign in to access your previous contract analyses.';
+  } else if (tab === 'register') {
+    regF.classList.remove('hidden');
+    tabs[1].classList.add('active');
+    title.textContent = 'Create an account';
+    sub.textContent = 'Save your lease analyses and access them anytime.';
+  } else if (tab === 'forgot') {
+    forgotF.classList.remove('hidden');
+    tabRow.style.display = 'none';
+    title.textContent = 'Reset your password';
+    sub.textContent = "Enter your email and we'll send you a reset link.";
+  }
+}
+
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  if (!email || !pass) { showToast('Please enter your email and password.', true); return; }
+  setLoggedIn(email.split('@')[0].replace(/[^a-zA-Z ]/g, ' ').trim() || 'User', email);
+  closeLoginModal();
+  showToast('Signed in successfully.');
+}
+
+function handleRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPassword').value;
+  if (!name || !email || !pass) { showToast('Please fill in all fields.', true); return; }
+  if (pass.length < 8) { showToast('Password must be at least 8 characters.', true); return; }
+  document.getElementById('registerForm').classList.add('hidden');
+  document.getElementById('modalTabRow').style.display = 'none';
+  document.getElementById('modalTitle').textContent = 'Almost there!';
+  document.getElementById('modalSub').textContent = '';
+  document.getElementById('successTitle').textContent = 'Verify your email';
+  document.getElementById('successSub').textContent = `We sent a verification link to ${email}. Click it to activate your account.`;
+  document.getElementById('modalSuccess').classList.remove('hidden');
+}
+
+function handleForgot() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  if (!email) { showToast('Please enter your email address.', true); return; }
+  document.getElementById('forgotForm').classList.add('hidden');
+  document.getElementById('modalTabRow').style.display = 'none';
+  document.getElementById('modalTitle').textContent = 'Email sent';
+  document.getElementById('modalSub').textContent = '';
+  document.getElementById('successTitle').textContent = 'Check your inbox';
+  document.getElementById('successSub').textContent = `We sent a password reset link to ${email}.`;
+  document.getElementById('modalSuccess').classList.remove('hidden');
+}
+
+function handleSocialAuth(provider) {
+  setLoggedIn('Alex Johnson', 'alex@example.com');
+  closeLoginModal();
+  showToast(`Signed in with ${provider}.`);
+}
+
+function setLoggedIn(name, email) {
+  currentUser = { name, email };
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 2);
+  document.getElementById('navLoginBtn').style.display = 'none';
+  const pill = document.getElementById('navUserPill');
+  pill.classList.add('show');
+  document.getElementById('navUserAvatar').textContent = initials;
+  document.getElementById('navUserName').textContent = name.split(' ')[0];
+  document.getElementById('dropdownEmail').textContent = email;
+  document.getElementById('dropdownName').textContent = name;
+}
+
+function logOut() {
+  currentUser = null;
+  document.getElementById('navLoginBtn').style.display = 'block';
+  document.getElementById('navUserPill').classList.remove('show');
+  closeUserDropdown();
+  showToast('Signed out.');
+}
+
+/* ── User dropdown ───────────────────────────────────────────── */
+function toggleUserDropdown() {
+  document.getElementById('userDropdown').classList.toggle('show');
+}
+
+function closeUserDropdown() {
+  document.getElementById('userDropdown').classList.remove('show');
+}
+
+document.addEventListener('click', e => {
+  const pill = document.getElementById('navUserPill');
+  const dropdown = document.getElementById('userDropdown');
+  if (!pill.contains(e.target) && !dropdown.contains(e.target)) closeUserDropdown();
+});
+
+/* ── Contracts modal ─────────────────────────────────────────── */
+function openContractsPanel() {
+  closeUserDropdown();
+  document.getElementById('contractsModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeContractsModal() {
+  document.getElementById('contractsModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function handleContractsOverlayClick(e) {
+  if (e.target === document.getElementById('contractsModal')) closeContractsModal();
+}
+
+/* ── Chat ────────────────────────────────────────────────────── */
+function sendSuggestion(el) {
+  document.getElementById('chatInput').value = el.textContent;
+  sendMessage();
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function appendMsg(role, text) {
+  const area = document.getElementById('chatArea');
+  const empty = document.getElementById('chatEmpty');
+  if (empty) empty.style.display = 'none';
+  const wrap = document.createElement('div');
+  wrap.className = 'chat-msg ' + (role === 'user' ? 'user' : '');
+  const av = document.createElement('div');
+  av.className = 'chat-avatar ' + (role === 'user' ? 'user-av' : 'bot');
+  av.textContent = role === 'user' ? 'You' : 'LG';
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble ' + (role === 'user' ? 'user' : 'bot');
+  bubble.textContent = text;
+  if (role === 'user') { wrap.appendChild(bubble); wrap.appendChild(av); }
+  else { wrap.appendChild(av); wrap.appendChild(bubble); }
+  area.appendChild(wrap);
+  area.scrollTop = area.scrollHeight;
+}
+
+function showTyping() {
+  const area = document.getElementById('chatArea');
+  const wrap = document.createElement('div');
+  wrap.className = 'chat-msg'; wrap.id = 'typingWrap';
+  const av = document.createElement('div');
+  av.className = 'chat-avatar bot'; av.textContent = 'LG';
+  const t = document.createElement('div');
+  t.className = 'typing-indicator';
+  t.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  wrap.appendChild(av); wrap.appendChild(t);
+  area.appendChild(wrap);
+  area.scrollTop = area.scrollHeight;
+}
+
+function hideTyping() {
+  const t = document.getElementById('typingWrap');
+  if (t) t.remove();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const q = input.value.trim();
+  if (!q) return;
+
+  const leaseText = contractContent || getSampleLease();
+  input.value = '';
+  input.style.height = 'auto';
+  appendMsg('user', q);
+  chatHistory.push({ role: 'user', content: q });
+
+  const btn = document.getElementById('chatSendBtn');
+  btn.disabled = true;
+  showTyping();
+
+  try {
+    const res = await fetch('/api/ask-lease-question', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ leaseText, userQuestion: q }),
+    });
+
+    const data = await res.json();
+    hideTyping();
+
+    const reply = res.ok
+      ? (data.answer || 'No answer returned.')
+      : (data.error || 'Something went wrong. Please try again.');
+
+    appendMsg('bot', reply);
+    chatHistory.push({ role: 'assistant', content: reply });
+  } catch (e) {
+    hideTyping();
+    appendMsg('bot', 'Could not reach the server. Please check your connection.');
+  }
+
+  btn.disabled = false;
+}
+
+document.getElementById('chatInput').addEventListener('input', function () {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+/* ── Keyboard shortcuts ──────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeLoginModal();
+    closeContractsModal();
+    closeUserDropdown();
+  }
+});
+</script>
+</body>
+</html>
