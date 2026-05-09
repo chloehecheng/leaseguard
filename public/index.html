@@ -230,7 +230,10 @@ section{padding:96px 24px;position:relative}
 
 /* ── FEATURES ── */
 .features-intro{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:64px}
-.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:18px}
+.features-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+.feat-card-full{grid-column:1/-1}
+@media(max-width:960px){.features-grid{grid-template-columns:1fr 1fr}.feat-card-full{grid-column:unset}}
+@media(max-width:580px){.features-grid{grid-template-columns:1fr}}
 .feature-card{
   background:var(--white);border:1.5px solid var(--bg3);
   border-radius:18px;padding:30px 26px;
@@ -570,7 +573,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
 .score-chip.warn{background:rgba(208,128,48,0.07);border-color:rgba(208,128,48,0.2);color:var(--warn)}
 .score-chip.safe{background:rgba(42,144,96,0.07);border-color:rgba(42,144,96,0.2);color:var(--safe)}
 
-.score-bar-track{background:var(--bg3);border-radius:999px;height:7px;overflow:hidden;margin:10px 0 4px}
+.score-bar-track{background:var(--bg3);border-radius:999px;height:12px;overflow:hidden;margin:10px 0 4px}
 .score-bar-fill{height:100%;border-radius:999px;transition:width 1.2s cubic-bezier(.25,.8,.25,1);background:var(--danger)}
 .score-bar-fill.medium{background:var(--warn)}
 .score-bar-fill.low{background:var(--safe)}
@@ -582,7 +585,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
 .risk-bars{display:flex;flex-direction:column;gap:11px}
 .risk-bar-item{display:flex;align-items:center;gap:10px}
 .risk-bar-label{font-size:13px;color:var(--ink2);width:130px;flex-shrink:0}
-.risk-bar-track-sm{flex:1;height:5px;background:var(--bg3);border-radius:999px;overflow:hidden}
+.risk-bar-track-sm{flex:1;height:9px;background:var(--bg3);border-radius:999px;overflow:hidden}
 .risk-bar-fill-sm{height:100%;border-radius:999px}
 .risk-bar-fill-sm.h{background:var(--danger)}
 .risk-bar-fill-sm.m{background:var(--warn)}
@@ -636,7 +639,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
 .chat-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
 .chat-avatar.bot{background:var(--blue);color:#fff;font-family:var(--font-display)}
 .chat-avatar.user-av{background:var(--bg3);color:var(--ink2)}
-.chat-bubble{max-width:78%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.65}
+.chat-bubble{max-width:84%;padding:14px 18px;border-radius:16px;font-size:14px;line-height:1.7}
 .chat-bubble.bot{background:var(--white);border:1px solid var(--bg3);color:var(--ink2);border-bottom-left-radius:4px}
 .chat-bubble.user{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
 .chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--ink3);gap:12px}
@@ -660,6 +663,26 @@ textarea.paste-area::placeholder{color:var(--ink4)}
 .chat-footer-note{font-size:12px;color:var(--ink4);margin-top:8px;text-align:center}
 
 /* ── ANIMATIONS ── */
+
+/* ── ANALYSIS LOADING PAGE ── */
+.loading-page{min-height:100vh;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center}
+.loading-page-icon{width:80px;height:80px;background:var(--white);border:2px solid var(--bg3);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 32px;box-shadow:var(--shadow);font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--blue)}
+.loading-page h2{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--ink);margin-bottom:10px;letter-spacing:-0.5px}
+.loading-page-sub{font-size:15px;color:var(--ink3);margin-bottom:48px;font-weight:300}
+.loading-steps-list{display:flex;flex-direction:column;gap:0;max-width:420px;width:100%;margin-bottom:40px;text-align:left}
+.loading-step-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--bg3);position:relative}
+.loading-step-row:last-child{border-bottom:none}
+.step-indicator{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;transition:all 0.4s}
+.step-indicator.waiting{background:var(--bg3);color:var(--ink4)}
+.step-indicator.active{background:var(--blue);color:#fff;animation:stepPulse 1s ease-in-out infinite}
+.step-indicator.done{background:var(--safe);color:#fff}
+@keyframes stepPulse{0%,100%{box-shadow:0 0 0 0 rgba(45,124,200,0.4)}50%{box-shadow:0 0 0 8px rgba(45,124,200,0)}}
+.step-label{font-size:14px;color:var(--ink2);font-weight:400}
+.step-label.active{color:var(--ink);font-weight:500}
+.step-label.done{color:var(--ink3)}
+.loading-progress-bar{width:100%;max-width:420px;height:4px;background:var(--bg3);border-radius:999px;overflow:hidden}
+.loading-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:999px;width:0%;transition:width 0.8s ease}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
 .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
 .reveal.visible{opacity:1;transform:none}
@@ -688,7 +711,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
 <!-- ─── NAV ─── -->
 <nav id="mainNav">
   <div class="nav-logo" onclick="showPage('landing')">
-    <div class="nav-logo-icon">LG</div>
+    <div class="nav-logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3V21M12 3L6 6M12 3L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 8L6 6L9 11C9 12.657 7.657 14 6 14C4.343 14 3 12.657 3 11L3 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M15 11L18 6L21 8V11C21 12.657 19.657 14 18 14C16.343 14 15 12.657 15 11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M4 21H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
     <span class="nav-logo-text">LeaseGuard</span>
   </div>
   <div class="nav-right">
@@ -863,6 +886,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
         <p class="section-sub" style="margin-bottom:0">Click any feature to go straight to the analyzer and see it in action.</p>
       </div>
       <div class="features-grid">
+        <!-- Row 1: three equal cards -->
         <div class="feature-card reveal" onclick="showPage('upload')">
           <span class="feat-tag risk">Risk Detection</span>
           <div class="feat-title">Risky Clause Detection</div>
@@ -878,26 +902,27 @@ textarea.paste-area::placeholder{color:var(--ink4)}
         <div class="feature-card reveal" onclick="showPage('upload')" style="transition-delay:.14s">
           <span class="feat-tag explain">Plain English</span>
           <div class="feat-title">Plain-English Explanations</div>
-          <div class="feat-desc">Every clause decoded: what it means, why it could hurt you, and what you should ask or negotiate before you sign on the dotted line.</div>
+          <div class="feat-desc">Every clause decoded: what it means, why it could hurt you, and what you should ask or negotiate before you sign.</div>
           <span class="feat-arrow">↗</span>
         </div>
-        <div class="feature-card reveal" onclick="showPage('chat')" style="transition-delay:.21s">
-          <span class="feat-tag qa">Q&A</span>
-          <div class="feat-title">Lease Q&A</div>
-          <div class="feat-desc">Ask anything about your specific contract. Answers are grounded in your own document, not generic legal templates or assumptions.</div>
-          <span class="feat-arrow">↗</span>
-        </div>
-        <div class="feature-card reveal" onclick="showPage('upload')" style="transition-delay:.28s">
-          <span class="feat-tag risk">Classification</span>
-          <div class="feat-title">Smart Clause Classification</div>
-          <div class="feat-desc">Clauses sorted into categories — termination, deposit, maintenance, arbitration, liability, renewal — so nothing slips through the analysis.</div>
-          <span class="feat-arrow">↗</span>
-        </div>
-        <div class="feature-card reveal" onclick="showPage('upload')" style="transition-delay:.35s">
-          <span class="feat-tag explain">Suggestions</span>
-          <div class="feat-title">Negotiation Suggestions</div>
-          <div class="feat-desc">For every risky clause, get a practical suggestion — what to push back on, what to ask for, and what a fair alternative wording looks like.</div>
-          <span class="feat-arrow">↗</span>
+        <!-- Row 2: one wide card + two stacked (via subgrid trick using nested grid) -->
+        <div class="feature-card reveal feat-card-full" onclick="showPage('chat')" style="transition-delay:.21s;display:flex;align-items:center;gap:32px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px">
+            <span class="feat-tag qa">Q&amp;A</span>
+            <div class="feat-title">Lease Q&amp;A — Ask Anything</div>
+            <div class="feat-desc" style="margin-bottom:0">Ask anything about your specific contract. "Can they raise rent mid-lease?" — get a direct answer grounded in your own document, not generic advice.</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-width:240px">
+            <div style="background:var(--blue-pale);border-radius:10px;padding:14px;border:1px solid var(--border)">
+              <div style="font-size:12px;color:var(--blue);font-weight:600;margin-bottom:4px">Classification</div>
+              <div style="font-size:13px;color:var(--ink3)">Clauses sorted into 8+ categories so nothing slips through</div>
+            </div>
+            <div style="background:var(--blue-pale);border-radius:10px;padding:14px;border:1px solid var(--border)">
+              <div style="font-size:12px;color:var(--blue);font-weight:600;margin-bottom:4px">Suggestions</div>
+              <div style="font-size:13px;color:var(--ink3)">Concrete negotiation advice for every risky clause found</div>
+            </div>
+          </div>
+          <span class="feat-arrow" style="align-self:flex-start">↗</span>
         </div>
       </div>
     </div>
@@ -1018,11 +1043,10 @@ textarea.paste-area::placeholder{color:var(--ink4)}
   </section>
 
   <footer>
-    <div class="footer-logo">LeaseGuard</div>
+    <div class="footer-logo" style="display:flex;align-items:center;gap:10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3V21M12 3L6 6M12 3L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 8L6 6L9 11C9 12.657 7.657 14 6 14C4.343 14 3 12.657 3 11L3 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M15 11L18 6L21 8V11C21 12.657 19.657 14 18 14C16.343 14 15 12.657 15 11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M4 21H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> LeaseGuard</div>
     <div class="footer-links">
       <span class="footer-note">Not legal advice. For informational purposes only. 2026 LeaseGuard</span>
-      <button class="footer-link" onclick="showPage('privacy')">Privacy Policy</button>
-      <button class="footer-link" onclick="showPage('privacy')">Terms of Use</button>
+      <button class="footer-link" onclick="showPage('privacy')">Privacy Policy &amp; Terms of Use</button>
     </div>
   </footer>
 
@@ -1046,7 +1070,11 @@ textarea.paste-area::placeholder{color:var(--ink4)}
     </div>
     <div class="divider">or paste contract text</div>
     <textarea class="paste-area" id="contractText" placeholder="Paste your lease agreement here…&#10;&#10;Example: Section 4. SECURITY DEPOSIT. Tenant shall deposit with Landlord the sum of $2,500 as security for the faithful performance of all terms…"></textarea>
-    <button class="sample-btn" onclick="document.getElementById('contractText').value=getSampleLease()">Load sample lease</button>
+    <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+      <button class="sample-btn" style="margin-top:0" onclick="document.getElementById('contractText').value=getSampleLease()">Load sample lease</button>
+      <button class="sample-btn" style="margin-top:0;color:var(--blue);border-color:var(--border2)" onclick="updateContractText()" id="updateBtn">Update Contract Text</button>
+    </div>
+    <div id="updateConfirm" style="display:none;font-size:12px;color:var(--safe);margin-top:6px;padding:6px 12px;background:rgba(42,144,96,0.08);border-radius:6px;border:1px solid rgba(42,144,96,0.2)">Contract text updated. Ready to analyze.</div>
     <div class="error-msg" id="uploadError"></div>
     <div class="action-btns">
       <button class="action-btn primary" onclick="goToResults()">
@@ -1057,6 +1085,42 @@ textarea.paste-area::placeholder{color:var(--ink4)}
         Ask Questions
         <small>Chat with AI about your lease</small>
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ANALYSIS LOADING PAGE
+══════════════════════════════════════ -->
+<div id="analyzing" class="page inner-page">
+  <div class="loading-page">
+    <div class="loading-page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3V21M12 3L6 6M12 3L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 8L6 6L9 11C9 12.657 7.657 14 6 14C4.343 14 3 12.657 3 11L3 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M15 11L18 6L21 8V11C21 12.657 19.657 14 18 14C16.343 14 15 12.657 15 11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M4 21H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <h2>Analyzing your lease</h2>
+    <p class="loading-page-sub">Reading every clause and checking for risks — this usually takes 15–30 seconds.</p>
+    <div class="loading-steps-list" id="loadingStepsList">
+      <div class="loading-step-row" id="lstep0">
+        <div class="step-indicator waiting" id="lind0">1</div>
+        <span class="step-label" id="llabel0">Reading contract structure</span>
+      </div>
+      <div class="loading-step-row" id="lstep1">
+        <div class="step-indicator waiting" id="lind1">2</div>
+        <span class="step-label" id="llabel1">Classifying clause types</span>
+      </div>
+      <div class="loading-step-row" id="lstep2">
+        <div class="step-indicator waiting" id="lind2">3</div>
+        <span class="step-label" id="llabel2">Detecting risky language</span>
+      </div>
+      <div class="loading-step-row" id="lstep3">
+        <div class="step-indicator waiting" id="lind3">4</div>
+        <span class="step-label" id="llabel3">Generating plain-English explanations</span>
+      </div>
+      <div class="loading-step-row" id="lstep4">
+        <div class="step-indicator waiting" id="lind4">5</div>
+        <span class="step-label" id="llabel4">Building negotiation suggestions</span>
+      </div>
+    </div>
+    <div class="loading-progress-bar">
+      <div class="loading-progress-fill" id="loadingProgressFill"></div>
     </div>
   </div>
 </div>
@@ -1144,7 +1208,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
 
     <div class="chat-area" id="chatArea">
       <div class="chat-empty" id="chatEmpty">
-        <div class="chat-empty-icon">LG</div>
+        <div class="chat-empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3V21M12 3L6 6M12 3L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 8L6 6L9 11C9 12.657 7.657 14 6 14C4.343 14 3 12.657 3 11L3 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M15 11L18 6L21 8V11C21 12.657 19.657 14 18 14C16.343 14 15 12.657 15 11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M4 21H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
         <div class="chat-empty-title">Ask about your lease</div>
         <p style="font-size:14px;color:var(--ink3);max-width:380px;line-height:1.6">I can answer questions based on your uploaded contract. Try one of the suggestions below or ask your own question.</p>
         <div class="chat-suggestions">
@@ -1174,7 +1238,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
     <div class="modal-header">
       <button class="modal-close" onclick="closeLoginModal()">&#10005;</button>
       <div class="modal-logo">
-        <div class="modal-logo-icon">LG</div>
+        <div class="modal-logo-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3V21M12 3L6 6M12 3L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 8L6 6L9 11C9 12.657 7.657 14 6 14C4.343 14 3 12.657 3 11L3 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M15 11L18 6L21 8V11C21 12.657 19.657 14 18 14C16.343 14 15 12.657 15 11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M4 21H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
         <span class="modal-logo-text">LeaseGuard</span>
       </div>
       <div class="modal-title" id="modalTitle">Welcome back</div>
@@ -1206,7 +1270,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
           <span style="font-size:13px;color:var(--blue);cursor:pointer" onclick="switchTab('forgot')">Forgot password?</span>
         </div>
         <button class="form-submit" onclick="handleLogin()">Sign In</button>
-        <p class="form-terms">By signing in you agree to our <a onclick="closeLoginModal();showPage('privacy')">Terms of Use</a> and <a onclick="closeLoginModal();showPage('privacy')">Privacy Policy</a>.</p>
+        <p class="form-terms">By signing in you agree to our <a onclick="closeLoginModal();showPage('privacy')">Privacy Policy &amp; Terms of Use</a>.</p>
       </div>
 
       <!-- REGISTER FORM -->
@@ -1229,7 +1293,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
           <input class="form-input" type="password" id="regPassword" placeholder="Min. 8 characters"/>
         </div>
         <button class="form-submit" onclick="handleRegister()">Create Account</button>
-        <p class="form-terms">By creating an account you agree to our <a onclick="closeLoginModal();showPage('privacy')">Terms of Use</a> and <a onclick="closeLoginModal();showPage('privacy')">Privacy Policy</a>.</p>
+        <p class="form-terms">By creating an account you agree to our <a onclick="closeLoginModal();showPage('privacy')">Privacy Policy &amp; Terms of Use</a>.</p>
       </div>
 
       <!-- FORGOT PASSWORD -->
@@ -1536,6 +1600,54 @@ function showToast(msg, isError = false) {
 }
 
 /* ── Analyze contract ────────────────────────────────────────── */
+// Loading page step animation
+let loadingInterval = null;
+
+function startLoadingAnimation() {
+  const steps = 5;
+  const stepDuration = 4000; // ms per step
+  let current = 0;
+
+  // Reset all steps
+  for (let i = 0; i < steps; i++) {
+    document.getElementById('lind' + i).className = 'step-indicator waiting';
+    document.getElementById('lind' + i).textContent = i + 1;
+    document.getElementById('llabel' + i).className = 'step-label';
+  }
+  document.getElementById('loadingProgressFill').style.width = '0%';
+
+  function activateStep(i) {
+    if (i >= steps) return;
+    // Mark previous as done
+    if (i > 0) {
+      document.getElementById('lind' + (i-1)).className = 'step-indicator done';
+      document.getElementById('lind' + (i-1)).textContent = '✓';
+      document.getElementById('llabel' + (i-1)).className = 'step-label done';
+    }
+    document.getElementById('lind' + i).className = 'step-indicator active';
+    document.getElementById('llabel' + i).className = 'step-label active';
+    document.getElementById('loadingProgressFill').style.width = ((i + 1) / steps * 85) + '%';
+  }
+
+  activateStep(0);
+  loadingInterval = setInterval(() => {
+    current++;
+    if (current < steps) activateStep(current);
+    else clearInterval(loadingInterval);
+  }, stepDuration);
+}
+
+function finishLoadingAnimation() {
+  clearInterval(loadingInterval);
+  const steps = 5;
+  for (let i = 0; i < steps; i++) {
+    document.getElementById('lind' + i).className = 'step-indicator done';
+    document.getElementById('lind' + i).textContent = '✓';
+    document.getElementById('llabel' + i).className = 'step-label done';
+  }
+  document.getElementById('loadingProgressFill').style.width = '100%';
+}
+
 async function goToResults() {
   const text = contractContent || document.getElementById('contractText').value.trim();
   const err = document.getElementById('uploadError');
@@ -1548,7 +1660,9 @@ async function goToResults() {
   err.classList.remove('show');
   contractContent = text;
 
-  const iv = showLoading();
+  // Show animated loading page
+  showPage('analyzing');
+  startLoadingAnimation();
 
   try {
     const res = await fetch('/api/analyze-lease', {
@@ -1558,19 +1672,41 @@ async function goToResults() {
     });
 
     const data = await res.json();
-    hideLoading(iv);
 
     if (!res.ok) {
-      showToast(data.error || 'Analysis failed. Please try again.', true);
+      finishLoadingAnimation();
+      setTimeout(() => {
+        showPage('upload');
+        showToast(data.error || 'Analysis failed. Please try again.', true);
+      }, 400);
       return;
     }
 
-    renderResults(data);
-    showPage('results');
+    finishLoadingAnimation();
+    // Brief pause so user sees all steps complete
+    setTimeout(() => {
+      renderResults(data);
+      showPage('results');
+    }, 700);
   } catch (e) {
-    hideLoading(iv);
-    showToast('Could not reach the server. Please check your connection.', true);
+    finishLoadingAnimation();
+    setTimeout(() => {
+      showPage('upload');
+      showToast('Could not reach the server. Please check your connection.', true);
+    }, 400);
   }
+}
+
+function updateContractText() {
+  const text = document.getElementById('contractText').value.trim();
+  if (!text || text.length < 30) {
+    showToast('Please paste or type your contract text first.', true);
+    return;
+  }
+  contractContent = text;
+  const confirm = document.getElementById('updateConfirm');
+  confirm.style.display = 'block';
+  setTimeout(() => { confirm.style.display = 'none'; }, 3000);
 }
 
 /* ── Render results ──────────────────────────────────────────── */
@@ -1920,7 +2056,20 @@ function appendMsg(role, text) {
   av.textContent = role === 'user' ? 'You' : 'LG';
   const bubble = document.createElement('div');
   bubble.className = 'chat-bubble ' + (role === 'user' ? 'user' : 'bot');
-  bubble.textContent = text;
+  if (role === 'bot') {
+    // Render line breaks and keep disclaimer styled differently
+    const parts = text.split('\n\n');
+    bubble.innerHTML = parts.map((p, i) => {
+      const escaped = p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      // Style the disclaimer paragraph differently
+      if (p.includes('Keep in mind these are suggestions') || p.includes('personal decision')) {
+        return '<span style="display:block;margin-top:12px;padding-top:12px;border-top:1px solid rgba(45,124,200,0.15);font-size:12px;color:var(--ink4);line-height:1.6;">' + escaped + '</span>';
+      }
+      return '<span style="display:block;' + (i > 0 ? 'margin-top:10px;' : '') + '">' + escaped + '</span>';
+    }).join('');
+  } else {
+    bubble.textContent = text;
+  }
   if (role === 'user') { wrap.appendChild(bubble); wrap.appendChild(av); }
   else { wrap.appendChild(av); wrap.appendChild(bubble); }
   area.appendChild(wrap);
