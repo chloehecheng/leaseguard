@@ -1837,17 +1837,39 @@ let lastAnalysisResult = null;   // stores last analysis for manual save
 let analysisSaved = false;        // tracks if current analysis is saved
 
 /* ── Page routing ────────────────────────────────────────────── */
-function showPage(id) {
+function showPage(id, pushHistory) {
+  // Don't push to history for 'analyzing' — it's a transient loading screen
+  if (pushHistory !== false && id !== 'analyzing') {
+    history.pushState({ page: id }, '', '#' + id);
+  }
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'instant' });
   closeUserDropdown();
 
-  // Reset upload page state when navigating to it fresh
   if (id === 'upload') {
     resetUploadForm();
   }
 }
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', function(e) {
+  const page = e.state?.page || 'landing';
+  // Use false so we don't push another history entry
+  showPage(page, false);
+  // Profile page needs data loaded
+  if (page === 'profile') loadProfilePage();
+});
+
+// Set initial history state on page load
+(function() {
+  const hash = window.location.hash.replace('#', '');
+  // Valid page IDs
+  const validPages = ['landing','upload','results','chat','privacy','profile'];
+  const startPage = validPages.includes(hash) ? hash : 'landing';
+  history.replaceState({ page: startPage }, '', startPage === 'landing' ? window.location.pathname : '#' + startPage);
+})();
 
 function resetUploadForm() {
   // Clear contract content and form so users can analyze a new lease
@@ -3083,8 +3105,8 @@ async function deleteAccount() {
 
 // Override showPage to auto-load profile data
 const _origShowPage = showPage;
-showPage = function(id) {
-  _origShowPage(id);
+showPage = function(id, pushHistory) {
+  _origShowPage(id, pushHistory);
   if (id === 'profile') loadProfilePage();
 };
 
@@ -3111,7 +3133,7 @@ showPage = function(id) {
     <div class="modal-body">
       <div class="welcome-actions">
         <button class="form-submit" onclick="closeWelcomeModal();showPage('upload')">
-          Analyze My First Lease
+          Analyze Now
         </button>
         <button class="form-submit" style="background:var(--white);color:var(--blue);border:1.5px solid var(--border2)" onclick="closeWelcomeModal()">
           Explore LeaseGuard

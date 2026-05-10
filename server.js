@@ -189,14 +189,46 @@ app.post('/api/auth/reset-password', async (req, res) => {
 
 app.post('/api/auth/update-profile', requireAuth, async (req, res) => {
   const { name } = req.body;
-  if (!name) return res.status(400).json({ error: 'Name is required.' });
+  if (!name || !String(name).trim()) return res.status(400).json({ error: 'Name is required.' });
+  const cleanName = String(name).trim().substring(0, 100);
+
+  // Try Supabase Auth updateUser first
   const userSupabase = createClient(
     process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY,
-    { global: { headers: { Authorization: 'Bearer ' + req.token } } }
+    {
+      realtime: { webSocketImpl: WebSocket },
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { headers: { Authorization: 'Bearer ' + req.token } },
+    }
   );
-  const { error } = await userSupabase.auth.updateUser({ data: { full_name: name } });
-  if (error) return res.status(400).json({ error: error.message });
-  return res.json({ message: 'Profile updated.', name });
+
+  const { error: authError } = await userSupabase.auth.updateUser({
+    data: { full_name: cleanName, display_name: cleanName },
+  });
+
+  if (authError) {
+    console.warn('[update-profile] Auth updateUser failed:', authError.message, '— falling back to profiles table');
+  }
+
+  // Always upsert into profiles table as the source of truth
+  const userDb = supabaseForRequest(req);
+  const { error: dbError } = await userDb
+    .from('profiles')
+    .upsert({ id: req.user.id, full_name: cleanName, updated_at: new Date().toISOString() })
+    .eq('id', req.user.id);
+
+  if (dbError) {
+    // profiles table might not exist yet — still return success if auth worked
+    if (!authError) {
+      console.warn('[update-profile] profiles upsert failed (table may not exist):', dbError.message);
+      return res.json({ message: 'Profile updated.', name: cleanName });
+    }
+    console.error('[update-profile] both methods failed:', dbError.message);
+    return res.status(500).json({ error: 'Could not update profile: ' + dbError.message });
+  }
+
+  console.log('[update-profile] name updated to:', cleanName, 'for user:', req.user.id);
+  return res.json({ message: 'Profile updated.', name: cleanName });
 });
 
 app.delete('/api/auth/delete-account', requireAuth, async (req, res) => {
@@ -220,7 +252,19 @@ app.post('/api/auth/update-password', requireAuth, async (req, res) => {
 });
 
 app.get('/api/auth/me', requireAuth, async (req, res) => {
-  const name = req.user.user_metadata?.full_name || req.user.email.split('@')[0];
+  // Check profiles table for custom display name (works for OAuth users too)
+  const userDb = supabaseForRequest(req);
+  const { data: profile } = await userDb
+    .from('profiles')
+    .select('full_name')
+    .eq('id', req.user.id)
+    .single();
+
+  const name = profile?.full_name
+    || req.user.user_metadata?.full_name
+    || req.user.user_metadata?.name
+    || req.user.email.split('@')[0];
+
   return res.json({ user: { id: req.user.id, email: req.user.email, name } });
 });
 
