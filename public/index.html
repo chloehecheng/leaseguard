@@ -683,6 +683,175 @@ textarea.paste-area::placeholder{color:var(--ink4)}
 .loading-progress-bar{width:100%;max-width:420px;height:4px;background:var(--bg3);border-radius:999px;overflow:hidden}
 .loading-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:999px;width:0%;transition:width 0.8s ease}
 
+
+/* ── WELCOME MODAL ── */
+.welcome-modal{max-width:460px}
+.welcome-hero{background:linear-gradient(135deg,var(--blue-pale) 0%,var(--bg2) 100%);border-radius:16px;padding:28px;text-align:center;margin-bottom:24px}
+.welcome-check{width:56px;height:56px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:#fff;font-size:22px}
+.welcome-name{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.welcome-email{font-size:13px;color:var(--ink3)}
+.welcome-actions{display:flex;flex-direction:column;gap:10px}
+
+
+/* ── PROFILE PAGE ── */
+.profile-page{background:var(--bg);min-height:100vh;padding-top:80px}
+.profile-wrap{max-width:860px;margin:0 auto;padding:48px 24px}
+
+.profile-header-card{
+  background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dark) 100%);
+  border-radius:20px;padding:36px 40px;
+  display:flex;align-items:center;gap:28px;
+  margin-bottom:28px;position:relative;overflow:hidden;
+}
+.profile-header-card::before{
+  content:'';position:absolute;right:-60px;top:-60px;
+  width:240px;height:240px;border-radius:50%;
+  background:rgba(255,255,255,0.06);
+}
+.profile-header-card::after{
+  content:'';position:absolute;right:40px;bottom:-80px;
+  width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,0.04);
+}
+.profile-avatar-big{
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  border:3px solid rgba(255,255,255,0.4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:28px;font-weight:700;
+  color:#fff;flex-shrink:0;position:relative;z-index:1;
+  cursor:pointer;transition:background 0.2s;
+}
+.profile-avatar-big:hover{background:rgba(255,255,255,0.3)}
+.profile-avatar-big input[type=file]{display:none}
+.profile-info{position:relative;z-index:1}
+.profile-info h2{font-family:var(--font-display);font-size:26px;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-0.3px}
+.profile-info p{font-size:14px;color:rgba(255,255,255,0.65);margin-bottom:12px}
+.profile-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(255,255,255,0.15);border-radius:999px;font-size:12px;color:#fff;font-weight:500}
+.profile-badge-dot{width:6px;height:6px;background:#4ade80;border-radius:50%}
+
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.profile-card{background:var(--white);border:1.5px solid var(--bg3);border-radius:16px;padding:24px}
+.profile-card-full{grid-column:1/-1}
+.profile-card-title{font-family:var(--font-display);font-size:17px;font-weight:500;color:var(--ink);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--bg3)}
+
+.profile-stat-row{display:flex;gap:0}
+.profile-stat{flex:1;text-align:center;padding:16px;border-right:1px solid var(--bg3)}
+.profile-stat:last-child{border-right:none}
+.profile-stat-num{font-family:var(--font-display);font-size:32px;font-weight:700;color:var(--blue);line-height:1;margin-bottom:4px}
+.profile-stat-label{font-size:12px;color:var(--ink3);text-transform:uppercase;letter-spacing:1px}
+
+.profile-field{margin-bottom:16px}
+.profile-field:last-child{margin-bottom:0}
+.profile-field label{display:block;font-size:12px;color:var(--ink3);font-weight:500;letter-spacing:0.3px;margin-bottom:5px;text-transform:uppercase}
+.profile-field input{width:100%;padding:10px 14px;background:var(--bg);border:1.5px solid var(--bg3);border-radius:10px;color:var(--ink);font-family:var(--font-body);font-size:14px;outline:none;transition:border-color 0.2s}
+.profile-field input:focus{border-color:var(--blue);background:var(--white)}
+.profile-field input:disabled{opacity:0.6;cursor:not-allowed}
+
+.profile-save-btn{padding:11px 24px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:var(--font-display);font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.profile-save-btn:hover{background:var(--blue-dark);transform:translateY(-1px)}
+.profile-save-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+.profile-contract-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bg3)}
+.profile-contract-row:last-child{border-bottom:none}
+.profile-contract-icon{width:36px;height:36px;background:var(--blue-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.profile-contract-info{flex:1;min-width:0}
+.profile-contract-name{font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.profile-contract-date{font-size:12px;color:var(--ink4)}
+.profile-contract-score{flex-shrink:0;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600}
+
+.profile-danger-zone{border:1.5px solid rgba(192,48,64,0.2);border-radius:16px;padding:24px;background:rgba(192,48,64,0.02)}
+.profile-danger-title{font-size:15px;font-weight:500;color:var(--danger);margin-bottom:6px}
+.profile-danger-desc{font-size:13px;color:var(--ink3);margin-bottom:16px;line-height:1.6}
+.profile-danger-btn{padding:10px 20px;background:transparent;color:var(--danger);border:1.5px solid rgba(192,48,64,0.3);border-radius:10px;font-family:var(--font-body);font-size:13px;cursor:pointer;transition:all 0.2s}
+.profile-danger-btn:hover{background:rgba(192,48,64,0.07);border-color:var(--danger)}
+
+.profile-empty{text-align:center;padding:32px;color:var(--ink4);font-size:14px}
+
+@media(max-width:700px){
+  .profile-grid{grid-template-columns:1fr}
+  .profile-card-full{grid-column:unset}
+  .profile-header-card{flex-direction:column;text-align:center;padding:28px 24px}
+  .profile-stat-row{flex-wrap:wrap}
+  .profile-stat{min-width:50%}
+}
+
+
+/* ── SAVE ANALYSIS BAR ── */
+.save-bar{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:16px;
+  padding:18px 24px;
+  margin-bottom:16px;
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+  transition:background 0.4s ease, border-color 0.4s ease;
+}
+.save-bar.show{display:flex}
+.save-bar-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.save-bar-icon{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.save-bar-icon.saved{background:rgba(42,144,96,0.1)}
+.save-bar-icon.unsaved{background:var(--blue-pale)}
+.save-bar-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px;white-space:nowrap}
+.save-bar-sub{font-size:12px;color:var(--ink3);white-space:nowrap}
+.save-bar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.save-btn{
+  padding:10px 22px;background:var(--blue);color:#fff;border:none;
+  border-radius:10px;font-family:var(--font-display);font-size:14px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.save-btn:hover{background:var(--blue-dark);transform:translateY(-1px)}
+.save-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.save-btn.saved-state{background:rgba(42,144,96,0.1);color:var(--safe);border:1px solid rgba(42,144,96,0.2)}
+.save-btn.saved-state:hover{background:rgba(42,144,96,0.15);transform:none}
+.login-to-save-btn{
+  padding:10px 22px;background:transparent;color:var(--blue);
+  border:1.5px solid var(--border2);border-radius:10px;
+  font-family:var(--font-display);font-size:14px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.login-to-save-btn:hover{background:var(--blue-pale);border-color:var(--blue)}
+.save-name-input{
+  padding:9px 14px;background:var(--bg);border:1.5px solid var(--bg3);
+  border-radius:10px;color:var(--ink);font-family:var(--font-body);
+  font-size:13px;outline:none;transition:border-color 0.2s;min-width:200px;
+}
+.save-name-input:focus{border-color:var(--blue);background:var(--white)}
+
+/* ── SAVE SUCCESS BANNER ── */
+.save-success-banner{
+  display:none;
+  align-items:center;gap:14px;
+  background:rgba(42,144,96,0.08);
+  border:1.5px solid rgba(42,144,96,0.25);
+  border-radius:14px;padding:16px 22px;
+  margin-bottom:16px;
+  animation:slideDown 0.4s cubic-bezier(.25,.8,.25,1);
+}
+.save-success-banner.show{display:flex}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.save-success-check{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--safe);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.save-success-text{flex:1}
+.save-success-title{font-size:14px;font-weight:500;color:var(--safe);margin-bottom:2px}
+.save-success-sub{font-size:12px;color:var(--ink3)}
+.save-success-link{
+  font-size:13px;color:var(--blue);cursor:pointer;
+  background:none;border:none;font-family:var(--font-body);
+  text-decoration:underline;white-space:nowrap;
+}
 @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
 .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
 .reveal.visible{opacity:1;transform:none}
@@ -705,6 +874,8 @@ textarea.paste-area::placeholder{color:var(--ink4)}
   .roadmap{padding-left:40px}
 }
 </style>
+  <!-- Supabase JS for browser-side OAuth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 
@@ -716,7 +887,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
   </div>
   <div class="nav-right">
     <button class="nav-login-btn" id="navLoginBtn" onclick="openLoginModal()">Log In</button>
-    <div class="nav-user-pill" id="navUserPill" onclick="toggleUserDropdown()">
+    <div class="nav-user-pill" id="navUserPill" onclick="showPage('profile')">
       <div class="nav-user-avatar" id="navUserAvatar">?</div>
       <span class="nav-user-name" id="navUserName">My Account</span>
     </div>
@@ -741,10 +912,13 @@ textarea.paste-area::placeholder{color:var(--ink4)}
     <div class="user-dropdown-name" id="dropdownName">My Account</div>
   </div>
   <div class="dropdown-divider"></div>
-  <div class="dropdown-item" onclick="openContractsPanel()">
+  <div class="dropdown-item" onclick="showPage('profile');closeUserDropdown()">
+    <span class="dropdown-icon">&#128100;</span>My Profile
+  </div>
+  <div class="dropdown-item" onclick="openContractsPanel();closeUserDropdown()">
     <span class="dropdown-icon">&#128196;</span>Previous Contracts
   </div>
-  <div class="dropdown-item" onclick="showPage('upload')">
+  <div class="dropdown-item" onclick="showPage('upload');closeUserDropdown()">
     <span class="dropdown-icon">&#43;</span>New Analysis
   </div>
   <div class="dropdown-divider"></div>
@@ -1178,6 +1352,30 @@ textarea.paste-area::placeholder{color:var(--ink4)}
       <div id="questionsList"></div>
     </div>
 
+    <!-- Save success banner -->
+    <div class="save-success-banner" id="saveSuccessBanner">
+      <div class="save-success-check">&#10003;</div>
+      <div class="save-success-text">
+        <div class="save-success-title">Analysis saved successfully!</div>
+        <div class="save-success-sub" id="saveSuccessSub">Your lease analysis has been saved to your profile.</div>
+      </div>
+      <button class="save-success-link" onclick="showPage('profile')">View in Profile &rarr;</button>
+    </div>
+
+    <!-- Save analysis bar -->
+    <div class="save-bar" id="saveBar">
+      <div class="save-bar-left">
+        <div class="save-bar-icon unsaved" id="saveBarIcon">&#128190;</div>
+        <div>
+          <div class="save-bar-title" id="saveBarTitle">Save this analysis to your profile</div>
+          <div class="save-bar-sub" id="saveBarSub">Access it anytime from your account</div>
+        </div>
+      </div>
+      <div class="save-bar-actions" id="saveBarActions">
+        <!-- populated by JS based on login state -->
+      </div>
+    </div>
+
     <!-- Bottom CTA -->
     <div class="bottom-cta" id="bottomCta" style="display:none">
       <div class="bottom-cta-text">
@@ -1366,6 +1564,99 @@ textarea.paste-area::placeholder{color:var(--ink4)}
 </div>
 
 <!-- ══════════════════════════════════════
+     PROFILE PAGE
+══════════════════════════════════════ -->
+<div id="profile" class="page profile-page">
+  <div class="profile-wrap">
+    <button class="back-btn" onclick="showPage('landing')">&#8592; Back to home</button>
+
+    <!-- Header card -->
+    <div class="profile-header-card">
+      <div class="profile-avatar-big" id="profileAvatarBig">?</div>
+      <div class="profile-info">
+        <h2 id="profileDisplayName">My Account</h2>
+        <p id="profileDisplayEmail">Loading...</p>
+        <span class="profile-badge"><span class="profile-badge-dot"></span>Active Member</span>
+      </div>
+    </div>
+
+
+
+    <div class="profile-grid">
+
+      <!-- Account details -->
+      <div class="profile-card">
+        <div class="profile-card-title">Account Details</div>
+        <div class="profile-field">
+          <label>Full Name</label>
+          <input type="text" id="profileName" placeholder="Your name"/>
+        </div>
+        <div class="profile-field">
+          <label>Email Address</label>
+          <input type="email" id="profileEmail" placeholder="your@email.com" disabled/>
+        </div>
+        <div style="margin-top:16px">
+          <button class="profile-save-btn" id="profileSaveBtn" onclick="saveProfileDetails()">Save Changes</button>
+        </div>
+      </div>
+
+      <!-- Change password -->
+      <div class="profile-card">
+        <div class="profile-card-title">Change Password</div>
+        <div class="profile-field">
+          <label>New Password</label>
+          <input type="password" id="profileNewPass" placeholder="Min. 8 characters"/>
+        </div>
+        <div class="profile-field">
+          <label>Confirm New Password</label>
+          <input type="password" id="profileConfirmPass" placeholder="Repeat new password"/>
+        </div>
+        <div style="margin-top:16px">
+          <button class="profile-save-btn" id="profilePassBtn" onclick="saveProfilePassword()">Update Password</button>
+        </div>
+      </div>
+
+      <!-- Recent contracts -->
+      <div class="profile-card profile-card-full">
+        <div class="profile-card-title" style="display:flex;align-items:center;justify-content:space-between">
+          <span>Recent Contracts</span>
+          <button onclick="showPage('upload')" style="font-size:13px;color:var(--blue);background:none;border:none;cursor:pointer;font-family:var(--font-body)">+ New Analysis</button>
+        </div>
+        <div id="profileContractsList">
+          <div class="profile-empty">Loading your contracts...</div>
+        </div>
+      </div>
+
+      <!-- Sign out card -->
+      <div class="profile-card profile-card-full">
+        <div class="profile-card-title">Account Session</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px">Sign out of LeaseGuard</div>
+            <div style="font-size:13px;color:var(--ink3);line-height:1.55">Sign out to switch to a different account or end your current session. Your saved contracts will still be here when you return.</div>
+          </div>
+          <button id="profileSignOutBtn" onclick="logOutFromProfile()" style="padding:12px 28px;background:var(--white);color:var(--ink2);border:1.5px solid var(--bg3);border-radius:10px;font-family:var(--font-display);font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all 0.2s;display:flex;align-items:center;gap:8px"
+            onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'"
+            onmouseout="this.style.borderColor='var(--bg3)';this.style.color='var(--ink2)'">
+            Sign Out &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="profile-card profile-card-full" style="padding:0;background:transparent;border:none">
+        <div class="profile-danger-zone">
+          <div class="profile-danger-title">Danger Zone</div>
+          <div class="profile-danger-desc">Permanently delete your account and all saved lease analyses. This action cannot be undone.</div>
+          <button class="profile-danger-btn" onclick="confirmDeleteAccount()">Delete My Account</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
      PRIVACY PAGE
 ══════════════════════════════════════ -->
 <div id="privacy" class="page privacy-page">
@@ -1542,6 +1833,8 @@ let contractContent = '';
 let chatHistory = [];
 let fromResults = false;
 let currentUser = null;
+let lastAnalysisResult = null;   // stores last analysis for manual save
+let analysisSaved = false;        // tracks if current analysis is saved
 
 /* ── Page routing ────────────────────────────────────────────── */
 function showPage(id) {
@@ -1549,6 +1842,53 @@ function showPage(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'instant' });
   closeUserDropdown();
+
+  // Reset upload page state when navigating to it fresh
+  if (id === 'upload') {
+    resetUploadForm();
+  }
+}
+
+function resetUploadForm() {
+  // Clear contract content and form so users can analyze a new lease
+  contractContent = '';
+  const ta = document.getElementById('contractText');
+  if (ta) ta.value = '';
+  const dz = document.getElementById('dropZone');
+  if (dz) dz.classList.remove('has-file', 'drag');
+  const fn = document.getElementById('fileNameDisplay');
+  if (fn) { fn.style.display = 'none'; fn.textContent = ''; }
+  const fi = document.getElementById('fileInput');
+  if (fi) fi.value = '';
+  const err = document.getElementById('uploadError');
+  if (err) err.classList.remove('show');
+  const confirm = document.getElementById('updateConfirm');
+  if (confirm) confirm.style.display = 'none';
+  // Reset results page too so old data doesn't show
+  const resultsSection = document.getElementById('resultsSection');
+  if (resultsSection) resultsSection.classList.remove('show');
+  const scoreHero = document.getElementById('scoreHero');
+  if (scoreHero) scoreHero.style.display = 'none';
+  const resultsGrid = document.getElementById('resultsGrid');
+  if (resultsGrid) resultsGrid.style.display = 'none';
+  const clauseLabel = document.getElementById('clauseSectionLabel');
+  if (clauseLabel) clauseLabel.style.display = 'none';
+  const clausesList = document.getElementById('clausesList');
+  if (clausesList) clausesList.innerHTML = '';
+  const sugPanel = document.getElementById('suggestionsPanel');
+  if (sugPanel) sugPanel.style.display = 'none';
+  const qPanel = document.getElementById('questionsPanel');
+  if (qPanel) qPanel.style.display = 'none';
+  const bottomCta = document.getElementById('bottomCta');
+  if (bottomCta) bottomCta.style.display = 'none';
+  const placeholder = document.getElementById('resultsPlaceholder');
+  if (placeholder) placeholder.style.display = 'block';
+  const saveBar = document.getElementById('saveBar');
+  if (saveBar) { saveBar.classList.remove('show'); saveBar.style.display = ''; saveBar.style.opacity = '1'; }
+  const banner = document.getElementById('saveSuccessBanner');
+  if (banner) banner.classList.remove('show');
+  lastAnalysisResult = null;
+  analysisSaved = false;
 }
 
 function goToChat() {
@@ -1665,10 +2005,15 @@ async function goToResults() {
   startLoadingAnimation();
 
   try {
+    const token = sessionStorage.getItem('lg_token');
+    const contractName = 'Lease — ' + new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+
     const res = await fetch('/api/analyze-lease', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ leaseText: text }),
+      headers,
+      body: JSON.stringify({ leaseText: text, contractName, saveToAccount: !!token }),
     });
 
     const data = await res.json();
@@ -1683,10 +2028,12 @@ async function goToResults() {
     }
 
     finishLoadingAnimation();
-    // Brief pause so user sees all steps complete
     setTimeout(() => {
-      renderResults(data);
+      lastAnalysisResult = { ...data, _leaseText: contractContent };
+      analysisSaved = false;
+      renderResults(lastAnalysisResult);
       showPage('results');
+      try { renderSaveBar(); } catch(e) {}
     }, 700);
   } catch (e) {
     finishLoadingAnimation();
@@ -1711,6 +2058,7 @@ function updateContractText() {
 
 /* ── Render results ──────────────────────────────────────────── */
 function renderResults(data) {
+  console.log('[renderResults] called, score:', data.risk_score, 'clauses:', data.risky_clauses?.length);
   const score = data.risk_score || 0;
   const level = data.risk_level || (score >= 70 ? 'high' : score >= 40 ? 'medium' : 'low');
 
@@ -1846,7 +2194,117 @@ function renderResults(data) {
   }
 
   document.getElementById('bottomCta').style.display = 'flex';
+
+  // renderSaveBar is called by goToResults / loadSavedContract
+  // lastAnalysisResult is set by the caller, not here
 }
+
+function renderSaveBar() {
+  var bar = document.getElementById('saveBar');
+  if (!bar) return;
+  bar.classList.add('show');
+
+  if (analysisSaved) {
+    bar.innerHTML =
+      '<div class="save-bar-left">' +
+        '<div class="save-bar-icon saved" style="font-size:22px;color:var(--safe)">&#10003;</div>' +
+        '<div>' +
+          '<div class="save-bar-title">Saved to your profile</div>' +
+          '<div class="save-bar-sub">Access it anytime from your account.</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="save-bar-actions">' +
+        '<button class="save-btn saved-state" onclick="showPage(&apos;profile&apos;)">View in Profile &rarr;</button>' +
+      '</div>';
+  } else if (currentUser) {
+    bar.innerHTML =
+      '<div class="save-bar-left">' +
+        '<div class="save-bar-icon unsaved" style="font-size:20px">&#128190;</div>' +
+        '<div>' +
+          '<div class="save-bar-title">Save this analysis</div>' +
+          '<div class="save-bar-sub">Name it and save to your profile.</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="save-bar-actions">' +
+        '<input class="save-name-input" id="saveNameInput" type="text" placeholder="e.g. Main St Apartment" maxlength="60" onkeydown="if(event.key===&apos;Enter&apos;)saveAnalysisNow()"/>' +
+        '<button class="save-btn" id="saveNowBtn" onclick="saveAnalysisNow()">Save</button>' +
+      '</div>';
+  } else {
+    bar.innerHTML =
+      '<div class="save-bar-left">' +
+        '<div class="save-bar-icon unsaved" style="font-size:20px">&#128190;</div>' +
+        '<div>' +
+          '<div class="save-bar-title">Sign in to save this analysis</div>' +
+          '<div class="save-bar-sub">Free account &mdash; access your leases anytime.</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="save-bar-actions">' +
+        '<button class="login-to-save-btn" onclick="openLoginModal()">Log In</button>' +
+        '<button class="save-btn" onclick="openLoginModal()">Sign Up Free</button>' +
+      '</div>';
+  }
+}
+
+async function saveAnalysisNow() {
+  if (!currentUser || !lastAnalysisResult) {
+    showToast('Please sign in first.', true); return;
+  }
+  const token = sessionStorage.getItem('lg_token');
+  if (!token) { openLoginModal(); return; }
+
+  const nameInput    = document.getElementById('saveNameInput');
+  const nameRaw      = nameInput ? nameInput.value.trim() : '';
+  const contractName = nameRaw || ('Lease — ' + new Date().toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}));
+  const leaseText    = lastAnalysisResult._leaseText || contractContent || document.getElementById('contractText')?.value?.trim() || '';
+
+  const btn = document.getElementById('saveNowBtn');
+  if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
+
+  try {
+    const res = await fetch('/api/contracts/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({
+        name:      contractName,
+        leaseText: leaseText,
+        analysis:  lastAnalysisResult,
+        riskScore: lastAnalysisResult.risk_score,
+        riskLevel: lastAnalysisResult.risk_level,
+      }),
+    });
+    const data = await res.json();
+    console.log('[saveAnalysisNow] status:', res.status, 'id:', data.id);
+
+    if (res.ok) {
+      analysisSaved = true;
+      if (lastAnalysisResult) {
+        lastAnalysisResult._contractId   = data.id || data.contract?.id || null;
+        lastAnalysisResult._contractName = contractName;
+      }
+      // Animate and show success banner
+      const bar = document.getElementById('saveBar');
+      if (bar) { bar.style.opacity = '0'; bar.style.transition = 'opacity 0.3s'; }
+      setTimeout(() => {
+        if (bar) bar.style.display = 'none';
+        const banner = document.getElementById('saveSuccessBanner');
+        if (banner) {
+          const sub = document.getElementById('saveSuccessSub');
+          if (sub) sub.textContent = '"' + contractName + '" has been saved to your profile.';
+          banner.classList.add('show');
+        }
+      }, 300);
+    } else {
+      console.error('[saveAnalysisNow] error:', data.error);
+      showToast(data.error || 'Could not save. Please try again.', true);
+      if (btn) { btn.textContent = 'Save'; btn.disabled = false; }
+    }
+  } catch (e) {
+    console.error('[saveAnalysisNow] exception:', e);
+    showToast('Could not connect to server.', true);
+    if (btn) { btn.textContent = 'Save'; btn.disabled = false; }
+  }
+}
+
 
 function escHtml(str) {
   if (!str) return '';
@@ -1882,9 +2340,42 @@ dz.addEventListener('drop', async e => {
 });
 async function readFile(f) {
   const d = document.getElementById('fileNameDisplay');
-  d.style.display = 'block'; d.textContent = f.name;
+  d.style.display = 'block';
+  d.textContent = f.name;
   dz.classList.add('has-file');
-  contractContent = await f.text();
+
+  const isPDF = f.name.toLowerCase().endsWith('.pdf') || f.type === 'application/pdf';
+
+  if (isPDF) {
+    // Send PDF to backend for proper text extraction
+    d.textContent = f.name + ' — extracting text…';
+    try {
+      const formData = new FormData();
+      formData.append('pdf', f);
+      const res = await fetch('/api/extract-pdf', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.text) {
+        d.textContent = f.name + ' — could not extract text';
+        dz.classList.remove('has-file');
+        showToast(data.error || 'Could not read PDF. Try copying and pasting the text instead.', true);
+        return;
+      }
+      contractContent = data.text;
+      d.textContent = f.name + ' — ' + data.pages + ' page' + (data.pages !== 1 ? 's' : '') + ' extracted';
+    } catch (e) {
+      d.textContent = f.name + ' — extraction failed';
+      dz.classList.remove('has-file');
+      showToast('Could not read PDF. Please paste the text manually instead.', true);
+      return;
+    }
+  } else {
+    // Plain text file — read directly
+    contractContent = await f.text();
+  }
+
   document.getElementById('contractText').value =
     contractContent.substring(0, 300) + (contractContent.length > 300 ? '…' : '');
 }
@@ -1942,50 +2433,145 @@ function switchTab(tab) {
   }
 }
 
-function handleLogin() {
+// ── Real Supabase Auth ─────────────────────────────────────────
+async function handleLogin() {
   const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPassword').value;
+  const pass  = document.getElementById('loginPassword').value;
   if (!email || !pass) { showToast('Please enter your email and password.', true); return; }
-  setLoggedIn(email.split('@')[0].replace(/[^a-zA-Z ]/g, ' ').trim() || 'User', email);
-  closeLoginModal();
-  showToast('Signed in successfully.');
+
+  const btn = document.querySelector('#loginForm .form-submit');
+  btn.textContent = 'Signing in…'; btn.disabled = true;
+
+  try {
+    const res  = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass }),
+    });
+    const data = await res.json();
+    if (!res.ok) { showToast(data.error || 'Login failed.', true); return; }
+
+    // Store session token
+    sessionStorage.setItem('lg_token', data.session.access_token);
+    sessionStorage.setItem('lg_user',  JSON.stringify(data.user));
+
+    setLoggedIn(data.user.name, data.user.email);
+    closeLoginModal();
+    showToast('Welcome back, ' + data.user.name.split(' ')[0] + '!');
+  } catch (e) {
+    showToast('Could not connect to server.', true);
+  } finally {
+    btn.textContent = 'Sign In'; btn.disabled = false;
+  }
 }
 
-function handleRegister() {
-  const name = document.getElementById('regName').value.trim();
+async function handleRegister() {
+  const name  = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim();
-  const pass = document.getElementById('regPassword').value;
+  const pass  = document.getElementById('regPassword').value;
   if (!name || !email || !pass) { showToast('Please fill in all fields.', true); return; }
   if (pass.length < 8) { showToast('Password must be at least 8 characters.', true); return; }
-  document.getElementById('registerForm').classList.add('hidden');
-  document.getElementById('modalTabRow').style.display = 'none';
-  document.getElementById('modalTitle').textContent = 'Almost there!';
-  document.getElementById('modalSub').textContent = '';
-  document.getElementById('successTitle').textContent = 'Verify your email';
-  document.getElementById('successSub').textContent = `We sent a verification link to ${email}. Click it to activate your account.`;
-  document.getElementById('modalSuccess').classList.remove('hidden');
+
+  const btn = document.querySelector('#registerForm .form-submit');
+  btn.textContent = 'Creating account…'; btn.disabled = true;
+
+  try {
+    const res  = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass, name }),
+    });
+    const data = await res.json();
+    if (!res.ok) { showToast(data.error || 'Sign up failed.', true); return; }
+
+    // If email confirm is OFF, session is returned immediately
+    if (data.session) {
+      sessionStorage.setItem('lg_token', data.session.access_token);
+      sessionStorage.setItem('lg_user',  JSON.stringify(data.user));
+      setLoggedIn(data.user.name || name, email);
+      closeLoginModal();
+      showWelcomeModal(name, email);
+    } else {
+      // Email confirmation required
+      document.getElementById('registerForm').classList.add('hidden');
+      document.getElementById('modalTabRow').style.display = 'none';
+      document.getElementById('modalTitle').textContent = 'Almost there!';
+      document.getElementById('modalSub').textContent = '';
+      document.getElementById('successTitle').textContent = 'Verify your email';
+      document.getElementById('successSub').textContent = 'We sent a verification link to ' + email + '. Click it to activate your account, then come back and sign in.';
+      document.getElementById('modalSuccess').classList.remove('hidden');
+    }
+  } catch (e) {
+    showToast('Could not connect to server.', true);
+  } finally {
+    btn.textContent = 'Create Account'; btn.disabled = false;
+  }
 }
 
-function handleForgot() {
+async function handleForgot() {
   const email = document.getElementById('forgotEmail').value.trim();
   if (!email) { showToast('Please enter your email address.', true); return; }
-  document.getElementById('forgotForm').classList.add('hidden');
-  document.getElementById('modalTabRow').style.display = 'none';
-  document.getElementById('modalTitle').textContent = 'Email sent';
-  document.getElementById('modalSub').textContent = '';
-  document.getElementById('successTitle').textContent = 'Check your inbox';
-  document.getElementById('successSub').textContent = `We sent a password reset link to ${email}.`;
-  document.getElementById('modalSuccess').classList.remove('hidden');
+
+  const btn = document.querySelector('#forgotForm .form-submit');
+  btn.textContent = 'Sending…'; btn.disabled = true;
+
+  try {
+    const res  = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+    document.getElementById('forgotForm').classList.add('hidden');
+    document.getElementById('modalTabRow').style.display = 'none';
+    document.getElementById('modalTitle').textContent = 'Email sent';
+    document.getElementById('modalSub').textContent = '';
+    document.getElementById('successTitle').textContent = 'Check your inbox';
+    document.getElementById('successSub').textContent = res.ok
+      ? 'We sent a password reset link to ' + email + '.'
+      : (data.error || 'Something went wrong. Please try again.');
+    document.getElementById('modalSuccess').classList.remove('hidden');
+  } catch (e) {
+    showToast('Could not connect to server.', true);
+  } finally {
+    btn.textContent = 'Send Reset Link'; btn.disabled = false;
+  }
 }
 
-function handleSocialAuth(provider) {
-  setLoggedIn('Alex Johnson', 'alex@example.com');
-  closeLoginModal();
-  showToast(`Signed in with ${provider}.`);
+// ── Supabase browser client for OAuth ────────────────────────
+const SUPABASE_URL  = 'https://xnstvewwkvbqopkvdvof.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhuc3R2ZXd3a3ZicW9wa3Zkdm9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDY3NTQsImV4cCI6MjA5MzkyMjc1NH0.ChBj2dVqeVUxzBb4K6Cqh0Ou_yJ3kWMPazu9yOFmIYc';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+async function handleSocialAuth(provider) {
+  if (provider !== 'Google') {
+    showToast(provider + ' sign-in is not set up yet.', true);
+    return;
+  }
+
+  try {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,  // redirect back to your site
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'select_account',           // always show account picker
+        },
+      },
+    });
+    if (error) {
+      console.error('Google OAuth error:', error.message);
+      showToast(error.message || 'Google sign-in failed.', true);
+    }
+    // If no error, browser is redirecting to Google — nothing more to do here
+  } catch (e) {
+    showToast('Could not initiate Google sign-in.', true);
+  }
 }
 
-function setLoggedIn(name, email) {
-  currentUser = { name, email };
+function setLoggedIn(name, email, token) {
+  currentUser = { name, email, token: token || sessionStorage.getItem('lg_token') };
   const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 2);
   document.getElementById('navLoginBtn').style.display = 'none';
   const pill = document.getElementById('navUserPill');
@@ -1994,15 +2580,136 @@ function setLoggedIn(name, email) {
   document.getElementById('navUserName').textContent = name.split(' ')[0];
   document.getElementById('dropdownEmail').textContent = email;
   document.getElementById('dropdownName').textContent = name;
+
+  // If results page is showing with unsaved analysis, update save bar
+  const resultsActive = document.getElementById('results')?.classList.contains('active');
+  if (resultsActive && lastAnalysisResult && !analysisSaved) {
+    renderSaveBar();
+  }
 }
 
-function logOut() {
+async function logOut() {
+  const token = sessionStorage.getItem('lg_token');
+  if (token) {
+    await fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+    }).catch(() => {});
+  }
+  sessionStorage.removeItem('lg_token');
+  sessionStorage.removeItem('lg_user');
   currentUser = null;
   document.getElementById('navLoginBtn').style.display = 'block';
   document.getElementById('navUserPill').classList.remove('show');
   closeUserDropdown();
   showToast('Signed out.');
 }
+
+// ── Restore session on page load ────────────────────────────────
+async function restoreSession() {
+  // 1. Handle Supabase email confirmation redirect
+  // After clicking the confirmation link, Supabase adds tokens to the URL hash
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token')) {
+    const params = new URLSearchParams(hash.replace('#', ''));
+    const accessToken = params.get('access_token');
+    const type = params.get('type'); // 'signup', 'recovery', or 'magiclink'
+
+    // Handle Google OAuth or email confirmation
+    if (accessToken && (type === 'signup' || type === 'magiclink' || !type)) {
+      try {
+        // Verify the token and get user info
+        const res = await fetch('/api/auth/me', {
+          headers: { 'Authorization': 'Bearer ' + accessToken },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          sessionStorage.setItem('lg_token', accessToken);
+          sessionStorage.setItem('lg_user', JSON.stringify(data.user));
+          setLoggedIn(data.user.name, data.user.email, accessToken);
+          // Clean up URL hash
+          window.history.replaceState(null, '', window.location.pathname);
+          // Show welcome modal instead of just a toast
+          showWelcomeModal(data.user.name, data.user.email);
+          return;
+        }
+      } catch (_) {}
+    }
+
+    if (accessToken && type === 'recovery') {
+      // Password reset link — show a reset password UI
+      sessionStorage.setItem('lg_reset_token', accessToken);
+      window.history.replaceState(null, '', window.location.pathname);
+      openLoginModal();
+      switchTab('forgot');
+      document.getElementById('modalTitle').textContent = 'Set new password';
+      document.getElementById('modalSub').textContent = 'Enter your new password below.';
+      document.getElementById('forgotForm').innerHTML = `
+        <div class="form-field">
+          <label class="form-label">New Password</label>
+          <input class="form-input" type="password" id="newPassword" placeholder="Min. 8 characters"/>
+        </div>
+        <button class="form-submit" onclick="handlePasswordUpdate()">Update Password</button>
+      `;
+      return;
+    }
+  }
+
+  // 2. Restore existing session from sessionStorage
+  const token    = sessionStorage.getItem('lg_token');
+  const userJson = sessionStorage.getItem('lg_user');
+  if (!token || !userJson) return;
+  try {
+    const user = JSON.parse(userJson);
+    const res = await fetch('/api/auth/me', {
+      headers: { 'Authorization': 'Bearer ' + token },
+    });
+    if (res.ok) {
+      setLoggedIn(user.name || user.email, user.email, token);
+    } else {
+      sessionStorage.removeItem('lg_token');
+      sessionStorage.removeItem('lg_user');
+    }
+  } catch (_) {}
+}
+
+function showWelcomeModal(name, email) {
+  document.getElementById('welcomeName').textContent = 'Welcome, ' + (name || 'to LeaseGuard') + '!';
+  document.getElementById('welcomeEmail').textContent = email || '';
+  document.getElementById('welcomeModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeWelcomeModal() {
+  document.getElementById('welcomeModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+async function handlePasswordUpdate() {
+  const newPass = document.getElementById('newPassword')?.value?.trim();
+  const token   = sessionStorage.getItem('lg_reset_token');
+  if (!newPass || newPass.length < 8) { showToast('Password must be at least 8 characters.', true); return; }
+  if (!token) { showToast('Reset session expired. Please request a new link.', true); return; }
+  try {
+    const res  = await fetch('/api/auth/update-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ password: newPass }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      sessionStorage.removeItem('lg_reset_token');
+      closeLoginModal();
+      showToast('Password updated! Please sign in with your new password.');
+    } else {
+      showToast(data.error || 'Could not update password.', true);
+    }
+  } catch (e) {
+    showToast('Could not connect to server.', true);
+  }
+}
+
+restoreSession();
 
 /* ── User dropdown ───────────────────────────────────────────── */
 function toggleUserDropdown() {
@@ -2020,10 +2727,100 @@ document.addEventListener('click', e => {
 });
 
 /* ── Contracts modal ─────────────────────────────────────────── */
-function openContractsPanel() {
+async function openContractsPanel() {
   closeUserDropdown();
   document.getElementById('contractsModal').classList.add('show');
   document.body.style.overflow = 'hidden';
+
+  const token = sessionStorage.getItem('lg_token');
+  if (!token) return;
+
+  const listArea = document.getElementById('contractsListArea');
+  listArea.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ink3);font-size:14px">Loading your contracts…</div>';
+
+  try {
+    const res  = await fetch('/api/contracts', { headers: { 'Authorization': 'Bearer ' + token } });
+    const data = await res.json();
+    console.log('[openContractsPanel] status:', res.status, 'count:', data.contracts?.length);
+
+    if (!res.ok || !data.contracts?.length) {
+      listArea.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ink3);font-size:14px">No saved contracts yet. Analyze a lease to save it here.</div>';
+      return;
+    }
+
+    listArea.innerHTML = data.contracts.map(c => {
+      const date  = new Date(c.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+      const lvl   = c.risk_level || 'low';
+      const cls   = lvl === 'high' ? 'high' : lvl === 'medium' ? 'med' : 'low';
+      const label = lvl === 'high' ? 'High Risk' : lvl === 'medium' ? 'Medium' : 'Low Risk';
+      const encId = encodeURIComponent(c.id);
+      return '<div class="contract-item" onclick="loadSavedContract(\'' + encId + '\')" style="cursor:pointer">' +
+        '<div class="contract-icon">&#128196;</div>' +
+        '<div class="contract-info">' +
+          '<div class="contract-name">' + escHtml(c.name) + '</div>' +
+          '<div class="contract-meta">Saved ' + date + '</div>' +
+        '</div>' +
+        '<span class="contract-score ' + cls + '">' + (c.risk_score || '?') + ' / ' + label + '</span>' +
+        '<button onclick="event.stopPropagation();deleteContract(\'' + encId + '\',this)" style="margin-left:8px;background:none;border:none;color:var(--ink4);cursor:pointer;font-size:16px;padding:4px" title="Delete">&#10005;</button>' +
+      '</div>';
+    }).join('');
+  } catch (e) {
+    console.error('[openContractsPanel]', e);
+    listArea.innerHTML = '<div style="text-align:center;padding:24px;color:var(--danger);font-size:14px">Could not load contracts.</div>';
+  }
+}
+
+async function loadSavedContract(id) {
+  const token = sessionStorage.getItem('lg_token');
+  if (!token) { showToast('Please sign in to load saved contracts.', true); return; }
+  closeContractsModal();
+
+  try {
+    const res  = await fetch('/api/contracts/' + encodeURIComponent(id), { headers: { 'Authorization': 'Bearer ' + token } });
+    const data = await res.json();
+    console.log('[loadSavedContract] status:', res.status, 'id:', id);
+
+    if (!res.ok || !data.contract) { showToast('Could not load contract.', true); return; }
+
+    contractContent  = data.contract.lease_text || '';
+    lastAnalysisResult = {
+      ...data.contract.analysis,
+      _leaseText:      contractContent,
+      _contractId:     data.contract.id,
+      _contractName:   data.contract.name,
+    };
+    analysisSaved = true;
+
+    renderResults(lastAnalysisResult);
+    showPage('results');
+    try { renderSaveBar(); } catch(e) {}
+  } catch (e) {
+    console.error('[loadSavedContract]', e);
+    showToast('Could not load contract.', true);
+  }
+}
+
+async function deleteContract(id, btn) {
+  const token = sessionStorage.getItem('lg_token');
+  if (!token) return;
+  btn.textContent = '…';
+  try {
+    const res = await fetch('/api/contracts/' + encodeURIComponent(id), {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + token },
+    });
+    if (res.ok) {
+      btn.closest('.contract-item').remove();
+      showToast('Contract deleted.');
+    } else {
+      const d = await res.json().catch(() => ({}));
+      showToast(d.error || 'Could not delete contract.', true);
+      btn.textContent = '✕';
+    }
+  } catch (e) {
+    showToast('Could not delete contract.', true);
+    btn.textContent = '✕';
+  }
 }
 
 function closeContractsModal() {
@@ -2034,6 +2831,7 @@ function closeContractsModal() {
 function handleContractsOverlayClick(e) {
   if (e.target === document.getElementById('contractsModal')) closeContractsModal();
 }
+
 
 /* ── Chat ────────────────────────────────────────────────────── */
 function sendSuggestion(el) {
@@ -2111,9 +2909,13 @@ async function sendMessage() {
   showTyping();
 
   try {
+    const chatToken = sessionStorage.getItem('lg_token');
+    const chatHeaders = { 'Content-Type': 'application/json' };
+    if (chatToken) chatHeaders['Authorization'] = 'Bearer ' + chatToken;
+
     const res = await fetch('/api/ask-lease-question', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: chatHeaders,
       body: JSON.stringify({ leaseText, userQuestion: q }),
     });
 
@@ -2147,6 +2949,180 @@ document.addEventListener('keydown', e => {
     closeUserDropdown();
   }
 });
+
+/* ── PROFILE PAGE ──────────────────────────────────────────── */
+async function loadProfilePage() {
+  if (!currentUser) { showPage('landing'); return; }
+  const name = currentUser.name || currentUser.email;
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0,2);
+  document.getElementById('profileAvatarBig').textContent = initials;
+  document.getElementById('profileDisplayName').textContent = name;
+  document.getElementById('profileDisplayEmail').textContent = currentUser.email;
+  document.getElementById('profileName').value = name;
+  document.getElementById('profileEmail').value = currentUser.email;
+
+  const token = sessionStorage.getItem('lg_token');
+  if (!token) return;
+
+  const listEl = document.getElementById('profileContractsList');
+  listEl.innerHTML = '<div class="profile-empty" style="padding:24px;text-align:center;color:var(--ink3);font-size:14px">Loading your contracts...</div>';
+
+  try {
+    const res  = await fetch('/api/contracts', { headers: { 'Authorization': 'Bearer ' + token } });
+    const data = await res.json();
+    console.log('[loadProfilePage] status:', res.status, 'count:', data.contracts?.length);
+    const contracts = data.contracts || [];
+
+    if (!contracts.length) {
+      listEl.innerHTML = '<div class="profile-empty" style="padding:32px;text-align:center;color:var(--ink3);font-size:14px">No saved contracts yet.<br>Analyze a lease and save it to see it here.</div>';
+      return;
+    }
+
+    listEl.innerHTML = contracts.slice(0,10).map(c => {
+      const date  = new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      const lvl   = c.risk_level || 'low';
+      const cls   = lvl==='high'?'high':lvl==='medium'?'med':'low';
+      const label = lvl==='high'?'High Risk':lvl==='medium'?'Medium':'Low Risk';
+      return '<div class="profile-contract-row" onclick="loadSavedContract(\'' + encodeURIComponent(c.id) + '\')" style="cursor:pointer">' +
+        '<div class="profile-contract-icon">&#128196;</div>' +
+        '<div class="profile-contract-info">' +
+          '<div class="profile-contract-name">' + escHtml(c.name) + '</div>' +
+          '<div class="profile-contract-date">Saved ' + date + '</div>' +
+        '</div>' +
+        '<span class="profile-contract-score contract-score ' + cls + '">' + (c.risk_score||'?') + ' / ' + label + '</span>' +
+        '<button onclick="event.stopPropagation();deleteContractFromProfile(\'' + encodeURIComponent(c.id) + '\',this)" ' +
+          'style="margin-left:8px;background:none;border:none;color:var(--ink4);cursor:pointer;font-size:16px;padding:4px 6px;" ' +
+          'title="Delete">&#10005;</button>' +
+      '</div>';
+    }).join('');
+  } catch (e) {
+    console.error('[loadProfilePage] error:', e);
+    listEl.innerHTML = '<div class="profile-empty" style="padding:24px;text-align:center;color:var(--danger);font-size:14px">Could not load contracts. Please try refreshing.</div>';
+  }
+}
+
+async function saveProfileDetails() {
+  const name  = document.getElementById('profileName').value.trim();
+  const token = sessionStorage.getItem('lg_token');
+  if (!name) { showToast('Please enter your name.',true); return; }
+  const btn = document.getElementById('profileSaveBtn');
+  btn.textContent='Saving…';btn.disabled=true;
+  try {
+    const res = await fetch('/api/auth/update-profile',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({name})});
+    const data = await res.json();
+    if (res.ok) {
+      if (currentUser) currentUser.name = name;
+      const stored = sessionStorage.getItem('lg_user');
+      if (stored) { const u=JSON.parse(stored); u.name=name; sessionStorage.setItem('lg_user',JSON.stringify(u)); }
+      const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2);
+      document.getElementById('navUserName').textContent = name.split(' ')[0];
+      document.getElementById('navUserAvatar').textContent = initials;
+      document.getElementById('profileAvatarBig').textContent = initials;
+      document.getElementById('profileDisplayName').textContent = name;
+      showToast('Profile updated!');
+    } else { showToast(data.error||'Could not save.',true); }
+  } catch(e) { showToast('Could not connect.',true); }
+  btn.textContent='Save Changes';btn.disabled=false;
+}
+
+async function saveProfilePassword() {
+  const newPass     = document.getElementById('profileNewPass').value;
+  const confirmPass = document.getElementById('profileConfirmPass').value;
+  const token       = sessionStorage.getItem('lg_token');
+  if (!newPass||newPass.length<8) { showToast('Password must be at least 8 characters.',true); return; }
+  if (newPass!==confirmPass)       { showToast('Passwords do not match.',true); return; }
+  const btn = document.getElementById('profilePassBtn');
+  btn.textContent='Updating…';btn.disabled=true;
+  try {
+    const res = await fetch('/api/auth/update-password',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({password:newPass})});
+    const data = await res.json();
+    if (res.ok) {
+      document.getElementById('profileNewPass').value='';
+      document.getElementById('profileConfirmPass').value='';
+      showToast('Password updated!');
+    } else { showToast(data.error||'Could not update.',true); }
+  } catch(e) { showToast('Could not connect.',true); }
+  btn.textContent='Update Password';btn.disabled=false;
+}
+
+async function deleteContractFromProfile(id, btn) {
+  const token = sessionStorage.getItem('lg_token');
+  if (!token) return;
+  btn.textContent='…';
+  try {
+    const res = await fetch('/api/contracts/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+token}});
+    if (res.ok) { btn.closest('.profile-contract-row').remove(); showToast('Deleted.'); loadProfilePage(); }
+    else { btn.textContent='✕'; showToast('Could not delete.',true); }
+  } catch(e) { btn.textContent='✕'; }
+}
+
+async function logOutFromProfile() {
+  const btn = document.getElementById('profileSignOutBtn');
+  if (btn) { btn.textContent = 'Signing out…'; btn.disabled = true; }
+  await logOut();        // reuse existing logOut which clears session + calls API
+  showPage('landing');   // return to landing after logout
+}
+
+function confirmDeleteAccount() {
+  if (confirm('Permanently delete your account and all saved contracts? This cannot be undone.')) deleteAccount();
+}
+
+async function deleteAccount() {
+  const token = sessionStorage.getItem('lg_token');
+  if (!token) return;
+  try {
+    const res = await fetch('/api/auth/delete-account',{method:'DELETE',headers:{'Authorization':'Bearer '+token}});
+    if (res.ok) {
+      sessionStorage.clear(); currentUser=null;
+      document.getElementById('navLoginBtn').style.display='block';
+      document.getElementById('navUserPill').classList.remove('show');
+      showPage('landing'); showToast('Account deleted.');
+    } else { const d=await res.json(); showToast(d.error||'Could not delete.',true); }
+  } catch(e) { showToast('Could not connect.',true); }
+}
+
+// Override showPage to auto-load profile data
+const _origShowPage = showPage;
+showPage = function(id) {
+  _origShowPage(id);
+  if (id === 'profile') loadProfilePage();
+};
+
 </script>
+
+<!-- ══ WELCOME MODAL (shown after email confirmation) ══ -->
+<div class="modal-overlay" id="welcomeModal" onclick="if(event.target===this)closeWelcomeModal()">
+  <div class="modal welcome-modal">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeWelcomeModal()">&#10005;</button>
+      <div style="margin-top:8px">
+        <div class="modal-logo" style="margin-bottom:20px">
+          <div class="modal-logo-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3V21M12 3L6 6M12 3L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 8L6 6L9 11C9 12.657 7.657 14 6 14C4.343 14 3 12.657 3 11L3 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M15 11L18 6L21 8V11C21 12.657 19.657 14 18 14C16.343 14 15 12.657 15 11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M4 21H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <span class="modal-logo-text">LeaseGuard</span>
+        </div>
+        <div class="welcome-hero">
+          <div class="welcome-check">&#10003;</div>
+          <div class="welcome-name" id="welcomeName">Welcome!</div>
+          <div class="welcome-email" id="welcomeEmail"></div>
+          <div style="font-size:13px;color:var(--ink3);margin-top:8px">Your email has been confirmed and you are now signed in.</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="welcome-actions">
+        <button class="form-submit" onclick="closeWelcomeModal();showPage('upload')">
+          Analyze My First Lease
+        </button>
+        <button class="form-submit" style="background:var(--white);color:var(--blue);border:1.5px solid var(--border2)" onclick="closeWelcomeModal()">
+          Explore LeaseGuard
+        </button>
+      </div>
+      <p style="font-size:12px;color:var(--ink4);text-align:center;margin-top:16px;line-height:1.5">
+        Your analyses are saved automatically when you're signed in. You can access them anytime from your account.
+      </p>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
