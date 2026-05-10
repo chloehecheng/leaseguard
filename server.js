@@ -382,59 +382,131 @@ app.post('/api/extract-pdf', upload.single('pdf'), async (req, res) => {
   }
 });
 
+// ── Tool definition for structured lease analysis ───────────────────────────
+const ANALYZE_LEASE_TOOL = {
+  name: 'analyze_lease_result',
+  description: 'Submit the complete structured analysis of a residential lease agreement.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      risk_score: { type: 'integer', description: 'Overall risk score 0-100. Higher = riskier for tenant.' },
+      risk_level: { type: 'string', enum: ['high','medium','low'], description: 'high if score>=70, medium if 40-69, low if <40.' },
+      summary: { type: 'string', description: '2-3 sentence plain-English summary of main tenant concerns.' },
+      risky_clauses: {
+        type: 'array',
+        description: '5 to 9 clauses that may disadvantage the tenant, ordered high to low risk.',
+        items: {
+          type: 'object',
+          properties: {
+            id:            { type: 'string' },
+            title:         { type: 'string' },
+            category:      { type: 'string', enum: ['Rent/Payment','Security Deposit','Termination','Maintenance','Liability','Entry/Privacy','Renewal','Arbitration','Other'] },
+            risk_level:    { type: 'string', enum: ['high','medium','low'] },
+            original_text: { type: 'string', description: 'Verbatim excerpt, max 80 words.' },
+            explanation:   { type: 'string', description: 'Plain English, 2-3 sentences.' },
+            why_risky:     { type: 'string', description: '1-2 sentences on tenant harm.' },
+            suggestion:    { type: 'string', description: 'Specific advice, 1-2 sentences.' },
+          },
+          required: ['id','title','category','risk_level','original_text','explanation','why_risky','suggestion'],
+        },
+      },
+      clause_explanations:         { type: 'object', additionalProperties: { type: 'string' }, description: 'One-sentence summary per category.' },
+      tenant_friendly_suggestions: { type: 'array', items: { type: 'string' }, description: '5 practical actions for the tenant.' },
+      questions_to_ask_landlord:   { type: 'array', items: { type: 'string' }, description: '4 specific questions to ask the landlord.' },
+      red_flags:                   { type: 'array', items: { type: 'string' }, description: 'Most serious red-flag phrases found.' },
+      negotiation_tips:            { type: 'array', items: { type: 'string' }, description: 'Specific negotiation tips.' },
+      missing_or_unclear_terms:    { type: 'array', items: { type: 'string' }, description: 'Terms absent or ambiguous in the lease.' },
+      tenant_rights_notes:         { type: 'array', items: { type: 'string' }, description: 'Relevant tenant rights regardless of lease.' },
+    },
+    required: ['risk_score','risk_level','summary','risky_clauses','clause_explanations','tenant_friendly_suggestions','questions_to_ask_landlord'],
+  },
+};
+
 app.post('/api/analyze-lease', async (req, res) => {
   const { leaseText } = req.body;
   if (!leaseText || typeof leaseText !== 'string' || leaseText.trim().length < 30) {
     return res.status(400).json({ error: 'leaseText is required (min 30 characters).' });
   }
-  const truncated = leaseText.trim().substring(0, 6000);
-  const system = [
-    'You are an expert legal analyst specializing in residential lease agreements for tenants.',
-    'Identify clauses that may disadvantage the tenant.',
-    'You MUST respond with ONLY a raw JSON object.',
-    'Do NOT use markdown. Do NOT use backticks. Do NOT wrap in code blocks.',
-    'Start your response with { and end with }. Nothing before or after.',
-  ].join(' ');
-  const user = 'Return ONLY a raw JSON object starting with { — no backticks, no markdown, no code blocks.\n\n' +
-    'Schema:\n{\n' +
-    '  "risk_score": <integer 0-100>,\n' +
-    '  "risk_level": "<high|medium|low>",\n' +
-    '  "summary": "<2-3 sentences>",\n' +
-    '  "risky_clauses": [\n' +
-    '    {\n' +
-    '      "id": "c1",\n' +
-    '      "title": "<name>",\n' +
-    '      "category": "<Rent/Payment|Security Deposit|Termination|Maintenance|Liability|Entry/Privacy|Renewal|Arbitration|Other>",\n' +
-    '      "risk_level": "<high|medium|low>",\n' +
-    '      "original_text": "<excerpt max 80 words>",\n' +
-    '      "explanation": "<2-3 plain English sentences>",\n' +
-    '      "why_risky": "<1-2 sentences>",\n' +
-    '      "suggestion": "<1-2 sentences of advice>"\n' +
-    '    }\n' +
-    '  ],\n' +
-    '  "clause_explanations": { "<category>": "<one sentence>" },\n' +
-    '  "tenant_friendly_suggestions": ["<action>","<action>","<action>","<action>","<action>"],\n' +
-    '  "questions_to_ask_landlord": ["<question>","<question>","<question>","<question>"]\n' +
-    '}\n\n' +
-    'Find 5-9 clauses. Flag: sole discretion, non-refundable, automatic renewal, binding arbitration, waives rights, entry at any time, tenant liable for all damages.\n\nLEASE:\n' + truncated;
-  try {
-    const raw    = await callClaude({ system, user, maxTokens: 4000 });
-    const parsed = extractJSON(raw);
-    const result = {
-      risk_score:  Math.min(100, Math.max(0, Number(parsed.risk_score) || 50)),
-      risk_level:  ['high','medium','low'].includes(parsed.risk_level) ? parsed.risk_level : 'medium',
-      summary:     String(parsed.summary || ''),
-      risky_clauses: Array.isArray(parsed.risky_clauses) ? parsed.risky_clauses : [],
-      clause_explanations: parsed.clause_explanations || {},
-      tenant_friendly_suggestions: Array.isArray(parsed.tenant_friendly_suggestions) ? parsed.tenant_friendly_suggestions : [],
-      questions_to_ask_landlord:   Array.isArray(parsed.questions_to_ask_landlord)   ? parsed.questions_to_ask_landlord   : [],
-    };
-    console.log('  ✓ Analysis done — score: ' + result.risk_score + ', clauses: ' + result.risky_clauses.length);
-    return res.json(result);
-  } catch (err) {
-    console.error('[analyze-lease]', err.message);
-    return res.status(500).json({ error: err.message || 'Analysis failed. Please try again.' });
+
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key || key === 'sk-ant-api03-YOUR_KEY_HERE') {
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY is not configured on the server.' });
   }
+
+  const truncated = leaseText.trim().substring(0, 6000);
+  console.log('  -> Calling Anthropic API (tool_use)...');
+
+  let apiRes;
+  try {
+    apiRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type':      'application/json',
+        'x-api-key':         key,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model:       'claude-haiku-4-5-20251001',
+        max_tokens:  4000,
+        system:      'You are an expert legal analyst specializing in residential lease agreements for tenants. Your job is to protect tenants by identifying clauses that may disadvantage them. You must call the analyze_lease_result tool with your complete structured analysis. Flag any clauses containing: sole discretion, non-refundable, automatic renewal, binding arbitration, waives rights, entry at any time, tenant responsible for all damages, early termination penalties.',
+        tools:       [ANALYZE_LEASE_TOOL],
+        tool_choice: { type: 'tool', name: 'analyze_lease_result' },
+        messages: [{
+          role:    'user',
+          content: 'Please analyze this residential lease agreement and call analyze_lease_result with your findings. Identify 5-9 risky clauses ordered from highest to lowest risk.\n\nLEASE:\n' + truncated,
+        }],
+      }),
+    });
+  } catch (networkErr) {
+    console.error('[analyze-lease] Network error:', networkErr.message);
+    return res.status(500).json({ error: 'Could not reach Anthropic API. Please try again.' });
+  }
+
+  const rawText = await apiRes.text();
+
+  if (!apiRes.ok) {
+    console.error('[analyze-lease] Anthropic error:', apiRes.status, rawText.substring(0, 300));
+    let msg = 'Anthropic API error ' + apiRes.status;
+    try { msg = JSON.parse(rawText).error?.message || msg; } catch (_) {}
+    return res.status(500).json({ error: msg });
+  }
+
+  let data;
+  try { data = JSON.parse(rawText); }
+  catch (_) {
+    console.error('[analyze-lease] Could not parse Anthropic response');
+    return res.status(500).json({ error: 'Unexpected response from Anthropic API.' });
+  }
+
+  // Extract structured output from the tool_use block
+  const toolUseBlock = Array.isArray(data.content)
+    ? data.content.find(b => b.type === 'tool_use' && b.name === 'analyze_lease_result')
+    : null;
+
+  if (!toolUseBlock || !toolUseBlock.input) {
+    console.error('[analyze-lease] No tool_use block. stop_reason:', data.stop_reason);
+    console.error('[analyze-lease] content:', JSON.stringify(data.content).substring(0, 400));
+    return res.status(500).json({ error: 'Model did not return structured analysis. Please try again.' });
+  }
+
+  const parsed = toolUseBlock.input;
+
+  const result = {
+    risk_score:                  Math.min(100, Math.max(0, Number(parsed.risk_score) || 50)),
+    risk_level:                  ['high','medium','low'].includes(parsed.risk_level) ? parsed.risk_level : 'medium',
+    summary:                     String(parsed.summary || ''),
+    risky_clauses:               Array.isArray(parsed.risky_clauses)               ? parsed.risky_clauses               : [],
+    clause_explanations:         (parsed.clause_explanations && typeof parsed.clause_explanations === 'object') ? parsed.clause_explanations : {},
+    tenant_friendly_suggestions: Array.isArray(parsed.tenant_friendly_suggestions) ? parsed.tenant_friendly_suggestions : [],
+    questions_to_ask_landlord:   Array.isArray(parsed.questions_to_ask_landlord)   ? parsed.questions_to_ask_landlord   : [],
+    red_flags:                   Array.isArray(parsed.red_flags)                   ? parsed.red_flags                   : [],
+    negotiation_tips:            Array.isArray(parsed.negotiation_tips)            ? parsed.negotiation_tips            : [],
+    missing_or_unclear_terms:    Array.isArray(parsed.missing_or_unclear_terms)    ? parsed.missing_or_unclear_terms    : [],
+    tenant_rights_notes:         Array.isArray(parsed.tenant_rights_notes)         ? parsed.tenant_rights_notes         : [],
+  };
+
+  console.log('  ✓ Analysis done — score:', result.risk_score, 'clauses:', result.risky_clauses.length);
+  return res.json(result);
 });
 
 app.post('/api/ask-lease-question', async (req, res) => {

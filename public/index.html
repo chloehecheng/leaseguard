@@ -1451,7 +1451,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
 
       <!-- LOGIN FORM -->
       <div class="modal-form" id="loginForm">
-        <button class="form-google" onclick="handleSocialAuth('Google')">
+        <button type="button" class="form-google" onclick="return handleSocialAuth(event)">
           <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.909-2.259c-.806.54-1.837.86-3.047.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
           Continue with Google
         </button>
@@ -1473,7 +1473,7 @@ textarea.paste-area::placeholder{color:var(--ink4)}
 
       <!-- REGISTER FORM -->
       <div class="modal-form hidden" id="registerForm">
-        <button class="form-google" onclick="handleSocialAuth('Google')">
+        <button type="button" class="form-google" onclick="return handleSocialAuth(event)">
           <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.909-2.259c-.806.54-1.837.86-3.047.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
           Sign up with Google
         </button>
@@ -1863,12 +1863,24 @@ window.addEventListener('popstate', function(e) {
 });
 
 // Set initial history state on page load
+// IMPORTANT: Do not remove ?code=... before restoreSession handles Google OAuth.
 (function() {
+  const hasOAuthCode = new URLSearchParams(window.location.search).has('code');
+
+  if (hasOAuthCode) {
+    console.log('[history init] OAuth code detected; preserving URL for restoreSession.');
+    return;
+  }
+
   const hash = window.location.hash.replace('#', '');
-  // Valid page IDs
-  const validPages = ['landing','upload','results','chat','privacy','profile'];
+  const validPages = ['landing', 'upload', 'results', 'chat', 'privacy', 'profile'];
   const startPage = validPages.includes(hash) ? hash : 'landing';
-  history.replaceState({ page: startPage }, '', startPage === 'landing' ? window.location.pathname : '#' + startPage);
+
+  history.replaceState(
+    { page: startPage },
+    '',
+    startPage === 'landing' ? window.location.pathname : '#' + startPage
+  );
 })();
 
 function resetUploadForm() {
@@ -2563,32 +2575,98 @@ async function handleForgot() {
 // ── Supabase browser client for OAuth ────────────────────────
 const SUPABASE_URL  = 'https://xnstvewwkvbqopkvdvof.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhuc3R2ZXd3a3ZicW9wa3Zkdm9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDY3NTQsImV4cCI6MjA5MzkyMjc1NH0.ChBj2dVqeVUxzBb4K6Cqh0Ou_yJ3kWMPazu9yOFmIYc';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-async function handleSocialAuth(provider) {
-  if (provider !== 'Google') {
-    showToast(provider + ' sign-in is not set up yet.', true);
-    return;
-  }
+// Guard: ensure Supabase SDK loaded before calling createClient
+let supabaseClient;
+try {
+  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      // Important: we manually exchange ?code=... in restoreSession().
+      // If this is true, Supabase may consume/remove the code before our code runs.
+      detectSessionInUrl: false,
+      flowType: 'pkce',
+    },
+  });
+  console.log('[Supabase] client initialised OK');
+} catch (e) {
+  console.error('[Supabase] createClient failed:', e);
+}
+
+// ── Auth state change listener ────────────────────────────────────────────────
+if (supabaseClient) {
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    console.log('[auth state change]', event, session?.user?.email);
+
+    if (session && session.access_token && session.user) {
+      const user = session.user;
+      const name =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.email?.split('@')[0] ||
+        'User';
+      const userObj = { id: user.id, email: user.email, name };
+      sessionStorage.setItem('lg_token', session.access_token);
+      sessionStorage.setItem('lg_user', JSON.stringify(userObj));
+      if (typeof setLoggedIn === 'function') {
+        setLoggedIn(name, user.email, session.access_token);
+      }
+      // Only redirect to upload on a real SIGNED_IN (not INITIAL_SESSION restore)
+      if (event === 'SIGNED_IN' && user && typeof showPage === 'function') {
+        console.log('[auth state change] SIGNED_IN detected, navigating to upload');
+        showPage('upload');
+      }
+    }
+
+    if (event === 'SIGNED_OUT') {
+      sessionStorage.removeItem('lg_token');
+      sessionStorage.removeItem('lg_user');
+    }
+  });
+}
+
+async function handleSocialAuth(event) {
+  if (event && event.preventDefault) event.preventDefault();
+  if (event && event.stopPropagation) event.stopPropagation();
+
+  console.log('[handleSocialAuth] clicked');
 
   try {
-    const { error } = await supabaseClient.auth.signInWithOAuth({
+    const redirectTo = window.location.origin + window.location.pathname;
+
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin,  // redirect back to your site
+        redirectTo,
+        skipBrowserRedirect: true,
         queryParams: {
+          prompt: 'select_account',
           access_type: 'offline',
-          prompt: 'select_account',           // always show account picker
         },
       },
     });
+
+    console.log('[handleSocialAuth] data:', data);
+    console.log('[handleSocialAuth] error:', error);
+
     if (error) {
-      console.error('Google OAuth error:', error.message);
-      showToast(error.message || 'Google sign-in failed.', true);
+      showToast('Google login failed: ' + error.message, true);
+      return false;
     }
-    // If no error, browser is redirecting to Google — nothing more to do here
+
+    if (!data || !data.url) {
+      showToast('Could not get Google login URL.', true);
+      return false;
+    }
+
+    console.log('[handleSocialAuth] redirecting to:', data.url);
+    window.location.href = data.url;
+    return false;
   } catch (e) {
-    showToast('Could not initiate Google sign-in.', true);
+    console.error('[handleSocialAuth] exception:', e);
+    showToast('Could not start Google login.', true);
+    return false;
   }
 }
 
@@ -2612,6 +2690,9 @@ function setLoggedIn(name, email, token) {
 
 async function logOut() {
   const token = sessionStorage.getItem('lg_token');
+  // Sign out from Supabase browser client (clears OAuth session)
+  try { await supabaseClient.auth.signOut(); } catch (_) {}
+  // Also call server logout for good measure
   if (token) {
     await fetch('/api/auth/logout', {
       method: 'POST',
@@ -2627,72 +2708,221 @@ async function logOut() {
   showToast('Signed out.');
 }
 
+
+function getOAuthCodeFromUrl() {
+  console.log('[getOAuthCodeFromUrl] href:', window.location.href);
+  console.log('[getOAuthCodeFromUrl] search:', window.location.search);
+  console.log('[getOAuthCodeFromUrl] hash:', window.location.hash);
+
+  // Normal PKCE callback: http://localhost:3000/?code=xxxx
+  let code = new URLSearchParams(window.location.search).get('code');
+  if (code) return code;
+
+  // Fallback: parse from the full URL in case search is unusual
+  const match = window.location.href.match(/[?&]code=([^&#]+)/);
+  if (match && match[1]) return decodeURIComponent(match[1]);
+
+  return null;
+}
+
 // ── Restore session on page load ────────────────────────────────
 async function restoreSession() {
-  // 1. Handle Supabase email confirmation redirect
-  // After clicking the confirmation link, Supabase adds tokens to the URL hash
-  const hash = window.location.hash;
-  if (hash && hash.includes('access_token')) {
-    const params = new URLSearchParams(hash.replace('#', ''));
-    const accessToken = params.get('access_token');
-    const type = params.get('type'); // 'signup', 'recovery', or 'magiclink'
+  console.log('[restoreSession] running at:', window.location.href);
 
-    // Handle Google OAuth or email confirmation
-    if (accessToken && (type === 'signup' || type === 'magiclink' || !type)) {
-      try {
-        // Verify the token and get user info
-        const res = await fetch('/api/auth/me', {
-          headers: { 'Authorization': 'Bearer ' + accessToken },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          sessionStorage.setItem('lg_token', accessToken);
-          sessionStorage.setItem('lg_user', JSON.stringify(data.user));
-          setLoggedIn(data.user.name, data.user.email, accessToken);
-          // Clean up URL hash
-          window.history.replaceState(null, '', window.location.pathname);
-          // Show welcome modal instead of just a toast
-          showWelcomeModal(data.user.name, data.user.email);
-          return;
+  try {
+    // Step 1: Handle Google OAuth callback: http://localhost:3000/?code=xxxx
+    const oauthCode = getOAuthCodeFromUrl();
+
+    console.log(
+      '[restoreSession] oauth code in URL:',
+      oauthCode ? oauthCode.substring(0, 12) + '...' : 'none'
+    );
+
+    if (oauthCode) {
+      console.log('[restoreSession] exchanging code for session...');
+
+      const { data: exchangeData, error: exchangeError } =
+        await supabaseClient.auth.exchangeCodeForSession(oauthCode);
+
+      console.log('[restoreSession] exchange data:', exchangeData);
+      console.log('[restoreSession] exchange error:', exchangeError);
+
+      if (exchangeError) {
+        console.error('[restoreSession] code exchange error:', exchangeError.message);
+
+        if (typeof showToast === 'function') {
+          showToast('Google login failed: ' + exchangeError.message, true);
         }
-      } catch (_) {}
+
+        return;
+      }
+
+      if (exchangeData && exchangeData.session) {
+        const session = exchangeData.session;
+        const user = session.user;
+
+        const name =
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name ||
+          user.email?.split('@')[0] ||
+          'User';
+
+        const userObj = {
+          id: user.id,
+          email: user.email,
+          name: name,
+        };
+
+        sessionStorage.setItem('lg_token', session.access_token);
+        sessionStorage.setItem('lg_user', JSON.stringify(userObj));
+
+        console.log('[restoreSession] code exchange SUCCESS, user:', user.email);
+        console.log('[restoreSession] token saved:', !!sessionStorage.getItem('lg_token'));
+
+        if (typeof setLoggedIn === 'function') {
+          setLoggedIn(name, user.email, session.access_token);
+        }
+
+        // Clean URL: remove ?code=...
+        window.history.replaceState(
+          null,
+          '',
+          window.location.origin + window.location.pathname
+        );
+
+        // Send user to app/upload page
+        if (typeof showPage === 'function') {
+          showPage('upload');
+        }
+
+        if (typeof showToast === 'function') {
+          showToast('Signed in with Google!');
+        }
+
+        return;
+      }
     }
 
-    if (accessToken && type === 'recovery') {
-      // Password reset link — show a reset password UI
-      sessionStorage.setItem('lg_reset_token', accessToken);
-      window.history.replaceState(null, '', window.location.pathname);
-      openLoginModal();
-      switchTab('forgot');
-      document.getElementById('modalTitle').textContent = 'Set new password';
-      document.getElementById('modalSub').textContent = 'Enter your new password below.';
-      document.getElementById('forgotForm').innerHTML = `
-        <div class="form-field">
-          <label class="form-label">New Password</label>
-          <input class="form-input" type="password" id="newPassword" placeholder="Min. 8 characters"/>
-        </div>
-        <button class="form-submit" onclick="handlePasswordUpdate()">Update Password</button>
-      `;
+    // Step 2: Restore existing Supabase browser session
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+      console.error('[restoreSession] getSession error:', error.message);
+    }
+
+    if (data && data.session) {
+      const session = data.session;
+      const user = session.user;
+
+      const name =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.email?.split('@')[0] ||
+        'User';
+
+      const userObj = {
+        id: user.id,
+        email: user.email,
+        name: name,
+      };
+
+      sessionStorage.setItem('lg_token', session.access_token);
+      sessionStorage.setItem('lg_user', JSON.stringify(userObj));
+
+      console.log('[restoreSession] existing Supabase session found:', user.email);
+
+      if (typeof setLoggedIn === 'function') {
+        setLoggedIn(name, user.email, session.access_token);
+      }
+
       return;
     }
-  }
 
-  // 2. Restore existing session from sessionStorage
-  const token    = sessionStorage.getItem('lg_token');
-  const userJson = sessionStorage.getItem('lg_user');
-  if (!token || !userJson) return;
-  try {
-    const user = JSON.parse(userJson);
+    // Step 3: Handle password recovery hash, if you use reset password
+    const hash = window.location.hash;
+
+    if (hash && hash.includes('access_token')) {
+      const params = new URLSearchParams(hash.replace('#', ''));
+      const type = params.get('type');
+
+      if (type === 'recovery') {
+        const accessToken = params.get('access_token');
+
+        sessionStorage.setItem('lg_reset_token', accessToken);
+
+        window.history.replaceState(
+          null,
+          '',
+          window.location.origin + window.location.pathname
+        );
+
+        if (typeof openLoginModal === 'function') openLoginModal();
+        if (typeof switchTab === 'function') switchTab('forgot');
+
+        const modalTitle = document.getElementById('modalTitle');
+        const modalSub = document.getElementById('modalSub');
+        const forgotForm = document.getElementById('forgotForm');
+
+        if (modalTitle) modalTitle.textContent = 'Set new password';
+        if (modalSub) modalSub.textContent = 'Enter your new password below.';
+
+        if (forgotForm) {
+          forgotForm.innerHTML =
+            '<div class="form-field">' +
+              '<label class="form-label">New Password</label>' +
+              '<input class="form-input" type="password" id="newPassword" placeholder="Min. 8 characters"/>' +
+            '</div>' +
+            '<button class="form-submit" onclick="handlePasswordUpdate()">Update Password</button>';
+        }
+
+        return;
+      }
+    }
+
+    // Step 4: Restore custom email/password session from sessionStorage
+    const token = sessionStorage.getItem('lg_token');
+    const userJson = sessionStorage.getItem('lg_user');
+
+    if (!token || !userJson) {
+      console.log('[restoreSession] No stored login session.');
+      return;
+    }
+
+    const savedUser = JSON.parse(userJson);
+
     const res = await fetch('/api/auth/me', {
-      headers: { 'Authorization': 'Bearer ' + token },
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
     });
+
     if (res.ok) {
-      setLoggedIn(user.name || user.email, user.email, token);
+      const meData = await res.json();
+
+      const restoredName =
+        meData.user?.name ||
+        savedUser.name ||
+        savedUser.email ||
+        'User';
+
+      const restoredEmail =
+        meData.user?.email ||
+        savedUser.email ||
+        '';
+
+      console.log('[restoreSession] restored custom session:', restoredEmail);
+
+      if (typeof setLoggedIn === 'function') {
+        setLoggedIn(restoredName, restoredEmail, token);
+      }
     } else {
+      console.log('[restoreSession] stored token invalid, clearing sessionStorage');
       sessionStorage.removeItem('lg_token');
       sessionStorage.removeItem('lg_user');
     }
-  } catch (_) {}
+  } catch (e) {
+    console.error('[restoreSession] error:', e);
+  }
 }
 
 function showWelcomeModal(name, email) {
@@ -2731,7 +2961,18 @@ async function handlePasswordUpdate() {
   }
 }
 
-restoreSession();
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.form-google').forEach(function (btn) {
+    btn.setAttribute('type', 'button');
+
+    btn.onclick = function (event) {
+      return handleSocialAuth(event);
+    };
+  });
+
+  restoreSession();
+});
+
 
 /* ── User dropdown ───────────────────────────────────────────── */
 function toggleUserDropdown() {
