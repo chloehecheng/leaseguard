@@ -46,7 +46,7 @@ Step 3: Paste the lease text into the lease input area on the website.
 
 Step 4: Click the analysis button to run the lease risk analysis.
 
-Note: This app is hosted on Render. If the app has been inactive, the first request may take 30–60 seconds while the server wakes up. If a request fails, please wait a few seconds and try again.
+**Note**: This app is hosted on Render. If the app has been inactive, the first request may take 30–60 seconds while the server wakes up. If a request fails, please wait a few seconds and try again.
 
 Step 5: Review the generated output. The app should produce a plain-English explanation of the lease, identify risky or unclear clauses, explain why those clauses may matter, and provide practical recommendations or questions for the user.
 
