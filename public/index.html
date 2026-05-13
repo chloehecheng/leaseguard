@@ -53,6 +53,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-siz
 /* ── PAGE ROUTING ── */
 .page{display:none}
 .page.active{display:block}
+.hidden{display:none!important}
 
 /* ── GEOMETRIC BG PATTERN (SVG inline via CSS) ── */
 .geo-bg{
@@ -2419,8 +2420,18 @@ function getSampleLease() {
 }
 
 /* ── Login modal ─────────────────────────────────────────────── */
+function resetAuthSuccessMessage() {
+  const success = document.getElementById('modalSuccess');
+  const successTitle = document.getElementById('successTitle');
+  const successSub = document.getElementById('successSub');
+  if (success) success.classList.add('hidden');
+  if (successTitle) successTitle.textContent = 'Check your email';
+  if (successSub) successSub.textContent = 'We sent a link to your email address. Click it to sign in.';
+}
+
 function openLoginModal() {
   closeUserDropdown();
+  resetAuthSuccessMessage();
   document.getElementById('loginModal').classList.add('show');
   document.body.style.overflow = 'hidden';
   switchTab('login');
@@ -2436,6 +2447,7 @@ function handleModalOverlayClick(e) {
 }
 
 function switchTab(tab) {
+  resetAuthSuccessMessage();
   const loginF = document.getElementById('loginForm');
   const regF = document.getElementById('registerForm');
   const forgotF = document.getElementById('forgotForm');
@@ -3182,18 +3194,33 @@ async function sendMessage() {
       body: JSON.stringify({ leaseText, userQuestion: q }),
     });
 
-    const data = await res.json();
+let rawText = '';
+let data = {};
+
+  try {
+    rawText = await res.text();
+    data = rawText ? JSON.parse(rawText) : {};
+  } catch (parseErr) {
+    console.error('[chat] Could not parse server response:', parseErr);
+    console.error('[chat] Raw response:', rawText);
     hideTyping();
+    appendMsg('bot', 'The server responded, but the response was not valid JSON. Check the browser console for the raw response.');
+    btn.disabled = false;
+    return;
+  }
 
-    const reply = res.ok
-      ? (data.answer || 'No answer returned.')
-      : (data.error || 'Something went wrong. Please try again.');
+  hideTyping();
 
-    appendMsg('bot', reply);
-    chatHistory.push({ role: 'assistant', content: reply });
+  const reply = res.ok
+    ? (data.answer || 'No answer returned.')
+    : (data.error || `Server error ${res.status}. Please check Render logs.`);
+
+  appendMsg('bot', reply);
+  chatHistory.push({ role: 'assistant', content: reply });
   } catch (e) {
     hideTyping();
-    appendMsg('bot', 'Could not reach the server. Please check your connection.');
+    console.error('[chat] Fetch failed:', e);
+    appendMsg('bot', 'The server request failed in the browser. Open Inspect → Console/Network to see the exact error.');
   }
 
   btn.disabled = false;

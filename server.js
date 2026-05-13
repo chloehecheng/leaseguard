@@ -136,6 +136,7 @@ function extractJSON(raw) {
 // AUTH ENDPOINTS
 // ════════════════════════════════════════════════════════════════════════════
 
+
 app.post('/api/auth/signup', async (req, res) => {
   const { email, password, name } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password are required.' });
